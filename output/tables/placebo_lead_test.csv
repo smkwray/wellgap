@@ -1,0 +1,2 @@
+term,estimate,std.error,statistic,p.value,conf.low,conf.high,outcome,treatment,placebo_lead
+f1_l1_acs_gini_z,-5.956031106529903e-4,0.002271259654328688,-0.26223470729903475,0.7942179053795995,-0.0051575623853017,0.00396635616399572,frequent_mental_distress_rate,l1_acs_gini_z,1

@@ -1,0 +1,171 @@
+project:
+  name: "wellgap"
+  geography: "state_year"
+  seed: 123
+
+api_keys:
+  census: "CENSUS_API_KEY"
+  bea: "BEA_API_KEY"
+  bls: "BLS_API_KEY"
+
+paths:
+  raw_root: "data/raw"
+  intermediate_root: "data/intermediate"
+  final_root: "data/final"
+  figures_root: "output/figures"
+  tables_root: "output/tables"
+  logs_root: "output/logs"
+
+windows:
+  state_year_start: 2012
+  state_year_end: 2024
+  bea_distribution_start: 2012
+  bea_distribution_end: 2023
+  hps_start: 2020
+  hps_end: 2025
+  acs_years: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024]
+  brfss_years: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2021, 2022, 2023, 2024]
+  hps_years: [2020, 2021, 2022, 2023, 2024, 2025]
+
+acs:
+  survey: "acs1"
+  base_vars:
+    gini: "B19083_001"
+    median_hh_income: "B19013_001"
+    total_population: "B01003_001"
+    labor_force: "B23025_003"
+    unemployed: "B23025_005"
+    housing_units: "B25001_001"
+
+bea:
+  api_base: "https://apps.bea.gov/api/data"
+  distribution_page: "https://www.bea.gov/data/special-topics/distribution-of-personal-income"
+  aliases:
+    pce: "bea_pce_state"
+    income: "bea_income_state"
+    rpp: "bea_rpp_state"
+  tables:
+    bea_pce_state:
+      dataset: "Regional"
+      table_name: "SASUMMARY"
+      geo_fips: "STATE"
+      year: "ALL"
+      line_code: "ALL"
+    bea_income_state:
+      dataset: "Regional"
+      table_name: "SAINC1"
+      geo_fips: "STATE"
+      year: "ALL"
+      line_code: "ALL"
+    bea_rpp_state:
+      dataset: "Regional"
+      table_name: "SARPP"
+      geo_fips: "STATE"
+      year: "ALL"
+      line_code: "ALL"
+  regex:
+    real_pce: "(?i)^real pce(\\b|\\s*\\()"
+    current_pce: "(?i)^personal consumption expenditures(\\b|\\s*\\()"
+    real_personal_income: "(?i)^real personal income(\\b|\\s*\\()"
+    personal_income: "(?i)^personal income(\\b|\\s*\\()"
+    population: "(?i)^population(\\b|\\s*\\()"
+    rpp_all_items: "(?i)^rpps:\\s*all items$|all items regional price parities|^regional price parities$"
+    rpp_housing: "(?i)^rpps:\\s*services:\\s*housing$|housing"
+
+hps:
+  puf_page: "https://www.census.gov/programs-surveys/household-pulse-survey/data/datasets.html"
+  tables_page: "https://www.census.gov/programs-surveys/household-pulse-survey/data/tables.html"
+
+cex:
+  pumd_page: "https://www.bls.gov/cex/pumd_data.htm"
+
+controls:
+  dol_min_wage_page: "https://www.dol.gov/agencies/whd/minimum-wage/state"
+  union_membership_page: "https://www.bls.gov/news.release/union2.htm"
+  fhfa_hpi_page: "https://www.fhfa.gov/data/hpi"
+  building_permits_page: "https://www.census.gov/construction/bps/"
+  laus_page: "https://www.bls.gov/lau/"
+  qcew_page: "https://www.bls.gov/cew/downloadable-data-files.htm"
+
+analysis:
+  causal_main_years: [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019]
+  final_estimand:
+    primary_outcome: "frequent_mental_distress_rate"
+    secondary_outcome: "fair_poor_health_rate"
+    primary_treatment: "l1_disp_top10_share_z"
+    sample_label: "2012_2019"
+  primary_treatments:
+    - "l1_acs_gini_z"
+    - "l1_disp_mean_median_gap_z"
+  wellbeing_primary_treatments:
+    - "l1_disp_top10_share_z"
+    - "l1_acs_gini_z"
+  wellbeing_secondary_treatments:
+    - "l1_disp_mean_median_gap_z"
+  falsification_outcomes:
+    - "frequent_physical_distress_rate"
+    - "mean_bad_physical_days"
+  secondary_wellbeing_outcomes:
+    - "frequent_physical_distress_rate"
+    - "mean_bad_physical_days"
+    - "all_cause_age_adjusted_rate"
+    - "cardiovascular_age_adjusted_rate"
+  material_wellbeing_outcomes:
+    - "log_rpp_adj_median_hh_income"
+    - "employment_to_population_ratio"
+  primary_wellbeing_outcomes:
+    - "frequent_mental_distress_rate"
+    - "fair_poor_health_rate"
+  primary_consumption_outcomes:
+    - "log_real_pce_pc"
+    - "real_pce_pc_growth"
+  baseline_controls:
+    - "l1_log_real_mean_income"
+    - "l1_rpp_all_items"
+    - "l1_unemployment_rate"
+    - "l1_hpi_yoy"
+    - "l1_permits_per_1000"
+    - "l1_college_share"
+    - "l1_black_share"
+    - "l1_hispanic_share"
+  causal_core_controls:
+    - "l1_log_real_mean_income"
+    - "l1_rpp_all_items"
+    - "l1_unemployment_rate"
+    - "l1_hpi_yoy"
+    - "l1_permits_per_1000"
+    - "l1_college_share"
+    - "l1_black_share"
+    - "l1_hispanic_share"
+  rich_controls:
+    - "l1_log_real_mean_income"
+    - "l1_rpp_all_items"
+    - "l1_unemployment_rate"
+    - "l1_hpi_yoy"
+    - "l1_permits_per_1000"
+    - "l1_college_share"
+    - "l1_black_share"
+    - "l1_hispanic_share"
+    - "l1_state_min_wage_nominal"
+    - "l1_union_membership_rate"
+    - "l1_qcew_private_avg_wkly_wage"
+    - "l1_qcew_manufacturing_share"
+    - "l1_qcew_professional_business_share"
+  core_controls:
+    - "l1_log_real_mean_income"
+    - "l1_rpp_all_items"
+    - "l1_unemployment_rate"
+    - "l1_hpi_yoy"
+    - "l1_permits_per_1000"
+    - "l1_college_share"
+    - "l1_black_share"
+    - "l1_hispanic_share"
+    - "l1_state_min_wage_nominal"
+    - "l1_union_membership_rate"
+    - "l1_qcew_private_avg_wkly_wage"
+    - "l1_qcew_manufacturing_share"
+    - "l1_qcew_professional_business_share"
+  cluster_var: "state"
+  horizons: [0, 1, 2, 3]
+  large_shock_quantile: 0.75
+  population_weight_var: "total_population"

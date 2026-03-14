@@ -1,0 +1,487 @@
+                                    baseline__frequent_mental_d..
+Dependent Var.:                     frequent_mental_distress_rate
+                                                                 
+l1_acs_gini_z                                     0.0002 (0.0016)
+l1_log_real_mean_income                          -0.0162 (0.0240)
+l1_rpp_all_items                                -0.0011* (0.0004)
+l1_unemployment_rate                              0.1638 (0.1313)
+l1_hpi_yoy                                       -0.0005 (0.0003)
+l1_permits_per_1000                              0.0012. (0.0006)
+l1_college_share                                  0.0755 (0.0927)
+l1_black_share                                  0.5106** (0.1676)
+l1_hispanic_share                                -0.2488 (0.1566)
+l1_disp_mean_median_gap_z                                        
+l1_state_min_wage_nominal                                        
+l1_union_membership_rate                                         
+l1_qcew_private_avg_wkly_wage                                    
+l1_qcew_manufacturing_share                                      
+l1_qcew_professional_business_share                              
+Fixed-Effects:                      -----------------------------
+state                                                         Yes
+year                                                          Yes
+___________________________________ _____________________________
+S.E.: Clustered                                         by: state
+Observations                                                  455
+R2                                                        0.91619
+Within R2                                                 0.12902
+
+                                    baseline__fair_poor.. baseline__log_re..
+Dependent Var.:                     fair_poor_health_rate    log_real_pce_pc
+                                                                            
+l1_acs_gini_z                             0.0015 (0.0017)    0.0024 (0.0027)
+l1_log_real_mean_income                   0.0136 (0.0216) 0.3304*** (0.0680)
+l1_rpp_all_items                        -4.63e-5 (0.0004)    0.0004 (0.0011)
+l1_unemployment_rate                      0.0965 (0.0733)    0.0674 (0.1921)
+l1_hpi_yoy                               -0.0002 (0.0002)   -0.0004 (0.0006)
+l1_permits_per_1000                       0.0003 (0.0006)   0.0035* (0.0013)
+l1_college_share                         -0.0895 (0.0828)   -0.3400 (0.2139)
+l1_black_share                          0.3202** (0.1173)  -0.6242. (0.3446)
+l1_hispanic_share                        -0.2316 (0.1584)   -0.2844 (0.2445)
+l1_disp_mean_median_gap_z                                                   
+l1_state_min_wage_nominal                                                   
+l1_union_membership_rate                                                    
+l1_qcew_private_avg_wkly_wage                                               
+l1_qcew_manufacturing_share                                                 
+l1_qcew_professional_business_share                                         
+Fixed-Effects:                      --------------------- ------------------
+state                                                 Yes                Yes
+year                                                  Yes                Yes
+___________________________________ _____________________ __________________
+S.E.: Clustered                                 by: state          by: state
+Observations                                          455                459
+R2                                                0.95201            0.98502
+Within R2                                         0.08690            0.37969
+
+                                    baseline__real_p..
+Dependent Var.:                     real_pce_pc_growth
+                                                      
+l1_acs_gini_z                         0.4506. (0.2330)
+l1_log_real_mean_income              -11.95*** (2.888)
+l1_rpp_all_items                    0.4288*** (0.0645)
+l1_unemployment_rate                     2.601 (11.66)
+l1_hpi_yoy                            -0.0009 (0.0335)
+l1_permits_per_1000                    0.0677 (0.0673)
+l1_college_share                        -16.48 (16.82)
+l1_black_share                          -23.24 (13.92)
+l1_hispanic_share                       -16.68 (14.87)
+l1_disp_mean_median_gap_z                             
+l1_state_min_wage_nominal                             
+l1_union_membership_rate                              
+l1_qcew_private_avg_wkly_wage                         
+l1_qcew_manufacturing_share                           
+l1_qcew_professional_business_share                   
+Fixed-Effects:                      ------------------
+state                                              Yes
+year                                               Yes
+___________________________________ __________________
+S.E.: Clustered                              by: state
+Observations                                       459
+R2                                             0.35723
+Within R2                                      0.25183
+
+                                    baseline__frequent_mental_d...1
+Dependent Var.:                       frequent_mental_distress_rate
+                                                                   
+l1_acs_gini_z                                                      
+l1_log_real_mean_income                            -0.0107 (0.0270)
+l1_rpp_all_items                                  -0.0010* (0.0005)
+l1_unemployment_rate                                0.1638 (0.1320)
+l1_hpi_yoy                                         -0.0005 (0.0003)
+l1_permits_per_1000                                0.0011. (0.0006)
+l1_college_share                                    0.0722 (0.0928)
+l1_black_share                                    0.5169** (0.1685)
+l1_hispanic_share                                  -0.2604 (0.1604)
+l1_disp_mean_median_gap_z                          -0.0010 (0.0015)
+l1_state_min_wage_nominal                                          
+l1_union_membership_rate                                           
+l1_qcew_private_avg_wkly_wage                                      
+l1_qcew_manufacturing_share                                        
+l1_qcew_professional_business_share                                
+Fixed-Effects:                        -----------------------------
+state                                                           Yes
+year                                                            Yes
+___________________________________   _____________________________
+S.E.: Clustered                                           by: state
+Observations                                                    455
+R2                                                          0.91631
+Within R2                                                   0.13030
+
+                                    baseline__fair_poor...1
+Dependent Var.:                       fair_poor_health_rate
+                                                           
+l1_acs_gini_z                                              
+l1_log_real_mean_income                     0.0017 (0.0255)
+l1_rpp_all_items                           -0.0002 (0.0004)
+l1_unemployment_rate                        0.1013 (0.0696)
+l1_hpi_yoy                                 -0.0003 (0.0002)
+l1_permits_per_1000                         0.0004 (0.0006)
+l1_college_share                           -0.1042 (0.0786)
+l1_black_share                            0.3154** (0.1155)
+l1_hispanic_share                          -0.2184 (0.1546)
+l1_disp_mean_median_gap_z                   0.0023 (0.0014)
+l1_state_min_wage_nominal                                  
+l1_union_membership_rate                                   
+l1_qcew_private_avg_wkly_wage                              
+l1_qcew_manufacturing_share                                
+l1_qcew_professional_business_share                        
+Fixed-Effects:                        ---------------------
+state                                                   Yes
+year                                                    Yes
+___________________________________   _____________________
+S.E.: Clustered                                   by: state
+Observations                                            455
+R2                                                  0.95233
+Within R2                                           0.09303
+
+                                    baseline__log_re...1 baseline__real_p...1
+Dependent Var.:                          log_real_pce_pc   real_pce_pc_growth
+                                                                             
+l1_acs_gini_z                                                                
+l1_log_real_mean_income               0.3721*** (0.0689)    -11.99*** (2.821)
+l1_rpp_all_items                         0.0008 (0.0011)   0.4250*** (0.0633)
+l1_unemployment_rate                     0.0653 (0.1933)        3.717 (11.59)
+l1_hpi_yoy                              -0.0002 (0.0006)     -0.0023 (0.0350)
+l1_permits_per_1000                     0.0032* (0.0013)      0.0781 (0.0636)
+l1_college_share                       -0.3741. (0.1983)       -21.75 (15.12)
+l1_black_share                         -0.5657. (0.3284)       -21.05 (14.09)
+l1_hispanic_share                      -0.3838. (0.2268)       -19.52 (15.80)
+l1_disp_mean_median_gap_z              -0.0074* (0.0029)      0.0459 (0.1917)
+l1_state_min_wage_nominal                                                    
+l1_union_membership_rate                                                     
+l1_qcew_private_avg_wkly_wage                                                
+l1_qcew_manufacturing_share                                                  
+l1_qcew_professional_business_share                                          
+Fixed-Effects:                        ------------------   ------------------
+state                                                Yes                  Yes
+year                                                 Yes                  Yes
+___________________________________   __________________   __________________
+S.E.: Clustered                                by: state            by: state
+Observations                                         459                  459
+R2                                               0.98538              0.35180
+Within R2                                        0.39463              0.24551
+
+                                    rich__frequent_mental_distr..
+Dependent Var.:                     frequent_mental_distress_rate
+                                                                 
+l1_acs_gini_z                                    -0.0002 (0.0015)
+l1_log_real_mean_income                          -0.0334 (0.0261)
+l1_rpp_all_items                                -0.0012* (0.0005)
+l1_unemployment_rate                              0.1439 (0.1212)
+l1_hpi_yoy                                       -0.0004 (0.0003)
+l1_permits_per_1000                              0.0013* (0.0006)
+l1_college_share                                  0.0202 (0.0870)
+l1_black_share                                 0.5399*** (0.1498)
+l1_hispanic_share                               -0.2541. (0.1487)
+l1_disp_mean_median_gap_z                                        
+l1_state_min_wage_nominal                        -0.0007 (0.0005)
+l1_union_membership_rate                         -0.0002 (0.0005)
+l1_qcew_private_avg_wkly_wage                  3.91e-5. (2.19e-5)
+l1_qcew_manufacturing_share                       0.2630 (0.1833)
+l1_qcew_professional_business_share               0.0642 (0.1289)
+Fixed-Effects:                      -----------------------------
+state                                                         Yes
+year                                                          Yes
+___________________________________ _____________________________
+S.E.: Clustered                                         by: state
+Observations                                                  454
+R2                                                        0.91840
+Within R2                                                 0.15001
+
+                                    rich__fair_poor_hea.. rich__log_real_p..
+Dependent Var.:                     fair_poor_health_rate    log_real_pce_pc
+                                                                            
+l1_acs_gini_z                             0.0015 (0.0017)    0.0026 (0.0027)
+l1_log_real_mean_income                   0.0065 (0.0219) 0.3621*** (0.0684)
+l1_rpp_all_items                         6.41e-5 (0.0004)    0.0003 (0.0011)
+l1_unemployment_rate                      0.1029 (0.0777)    0.1043 (0.2039)
+l1_hpi_yoy                               -0.0001 (0.0002)   -0.0004 (0.0005)
+l1_permits_per_1000                       0.0004 (0.0006)   0.0030* (0.0014)
+l1_college_share                         -0.0841 (0.0841)   -0.2184 (0.2333)
+l1_black_share                          0.3205** (0.1018)  -0.6567* (0.3093)
+l1_hispanic_share                        -0.2066 (0.1586)   -0.2412 (0.2429)
+l1_disp_mean_median_gap_z                                                   
+l1_state_min_wage_nominal                -0.0003 (0.0006)    0.0011 (0.0012)
+l1_union_membership_rate                 -0.0002 (0.0005)   -0.0010 (0.0009)
+l1_qcew_private_avg_wkly_wage           2.26e-5 (1.69e-5)  -5.9e-5 (4.52e-5)
+l1_qcew_manufacturing_share              0.3802* (0.1644)  -0.6240* (0.3003)
+l1_qcew_professional_business_share      -0.1244 (0.1074)   -0.2538 (0.2728)
+Fixed-Effects:                      --------------------- ------------------
+state                                                 Yes                Yes
+year                                                  Yes                Yes
+___________________________________ _____________________ __________________
+S.E.: Clustered                                 by: state          by: state
+Observations                                          454                458
+R2                                                0.95313            0.98553
+Within R2                                         0.10806            0.39468
+
+                                    rich__real_pce_pc..
+Dependent Var.:                      real_pce_pc_growth
+                                                       
+l1_acs_gini_z                          0.4727. (0.2500)
+l1_log_real_mean_income                -9.049** (3.158)
+l1_rpp_all_items                     0.5239*** (0.0702)
+l1_unemployment_rate                      13.01 (13.45)
+l1_hpi_yoy                             -0.0059 (0.0366)
+l1_permits_per_1000                     0.0908 (0.0663)
+l1_college_share                         -11.64 (17.92)
+l1_black_share                          -33.99* (16.50)
+l1_hispanic_share                        -16.20 (16.72)
+l1_disp_mean_median_gap_z                              
+l1_state_min_wage_nominal              0.1271* (0.0627)
+l1_union_membership_rate                0.0100 (0.0719)
+l1_qcew_private_avg_wkly_wage       -0.0076*** (0.0021)
+l1_qcew_manufacturing_share               39.10 (23.53)
+l1_qcew_professional_business_share       30.46 (19.44)
+Fixed-Effects:                      -------------------
+state                                               Yes
+year                                                Yes
+___________________________________ ___________________
+S.E.: Clustered                               by: state
+Observations                                        458
+R2                                              0.38433
+Within R2                                       0.28262
+
+                                    rich__frequent_mental_distr...1
+Dependent Var.:                       frequent_mental_distress_rate
+                                                                   
+l1_acs_gini_z                                                      
+l1_log_real_mean_income                            -0.0251 (0.0292)
+l1_rpp_all_items                                  -0.0011* (0.0005)
+l1_unemployment_rate                                0.1458 (0.1211)
+l1_hpi_yoy                                         -0.0004 (0.0003)
+l1_permits_per_1000                                0.0013. (0.0006)
+l1_college_share                                    0.0246 (0.0866)
+l1_black_share                                   0.5444*** (0.1504)
+l1_hispanic_share                                 -0.2620. (0.1503)
+l1_disp_mean_median_gap_z                          -0.0014 (0.0015)
+l1_state_min_wage_nominal                          -0.0007 (0.0005)
+l1_union_membership_rate                           -0.0003 (0.0005)
+l1_qcew_private_avg_wkly_wage                    3.92e-5. (2.21e-5)
+l1_qcew_manufacturing_share                         0.2848 (0.1799)
+l1_qcew_professional_business_share                 0.0562 (0.1276)
+Fixed-Effects:                        -----------------------------
+state                                                           Yes
+year                                                            Yes
+___________________________________   _____________________________
+S.E.: Clustered                                           by: state
+Observations                                                    454
+R2                                                          0.91863
+Within R2                                                   0.15245
+
+                                    rich__fair_poor_hea...1
+Dependent Var.:                       fair_poor_health_rate
+                                                           
+l1_acs_gini_z                                              
+l1_log_real_mean_income                    -0.0039 (0.0250)
+l1_rpp_all_items                           -0.0001 (0.0004)
+l1_unemployment_rate                        0.1031 (0.0743)
+l1_hpi_yoy                                 -0.0002 (0.0002)
+l1_permits_per_1000                         0.0005 (0.0007)
+l1_college_share                           -0.1083 (0.0794)
+l1_black_share                            0.3226** (0.0999)
+l1_hispanic_share                          -0.2080 (0.1553)
+l1_disp_mean_median_gap_z                   0.0018 (0.0014)
+l1_state_min_wage_nominal                  -0.0002 (0.0006)
+l1_union_membership_rate                   -0.0002 (0.0005)
+l1_qcew_private_avg_wkly_wage             2.28e-5 (1.64e-5)
+l1_qcew_manufacturing_share                0.3479* (0.1659)
+l1_qcew_professional_business_share        -0.1073 (0.1102)
+Fixed-Effects:                        ---------------------
+state                                                   Yes
+year                                                    Yes
+___________________________________   _____________________
+S.E.: Clustered                                   by: state
+Observations                                            454
+R2                                                  0.95327
+Within R2                                           0.11062
+
+                                    rich__log_real_p...1 rich__real_pce_pc...1
+Dependent Var.:                          log_real_pce_pc    real_pce_pc_growth
+                                                                              
+l1_acs_gini_z                                                                 
+l1_log_real_mean_income               0.4098*** (0.0690)      -9.055** (3.355)
+l1_rpp_all_items                         0.0009 (0.0011)    0.5165*** (0.0696)
+l1_unemployment_rate                     0.1178 (0.2073)         13.82 (13.60)
+l1_hpi_yoy                              -0.0002 (0.0005)      -0.0070 (0.0383)
+l1_permits_per_1000                     0.0028* (0.0013)       0.1007 (0.0660)
+l1_college_share                        -0.2344 (0.2119)        -18.02 (15.86)
+l1_black_share                         -0.6063* (0.2957)       -31.25. (16.57)
+l1_hispanic_share                       -0.3161 (0.2225)        -19.97 (18.65)
+l1_disp_mean_median_gap_z              -0.0077* (0.0030)       0.0296 (0.1921)
+l1_state_min_wage_nominal                0.0008 (0.0011)      0.1354* (0.0645)
+l1_union_membership_rate                -0.0014 (0.0009)       0.0010 (0.0716)
+l1_qcew_private_avg_wkly_wage          -5.8e-5 (4.28e-5)   -0.0075*** (0.0021)
+l1_qcew_manufacturing_share            -0.5138. (0.2745)         37.18 (23.80)
+l1_qcew_professional_business_share     -0.2878 (0.2769)         32.75 (21.02)
+Fixed-Effects:                        ------------------   -------------------
+state                                                Yes                   Yes
+year                                                 Yes                   Yes
+___________________________________   __________________   ___________________
+S.E.: Clustered                                by: state             by: state
+Observations                                         458                   458
+R2                                               0.98591               0.37841
+Within R2                                        0.41018               0.27572
+
+                                    weighted__frequent_mental_d..
+Dependent Var.:                     frequent_mental_distress_rate
+                                                                 
+l1_acs_gini_z                                     0.0007 (0.0024)
+l1_log_real_mean_income                         -0.0524. (0.0281)
+l1_rpp_all_items                                -0.0011* (0.0005)
+l1_unemployment_rate                            0.2701** (0.0979)
+l1_hpi_yoy                                       -0.0003 (0.0003)
+l1_permits_per_1000                              0.0017. (0.0009)
+l1_college_share                                  0.0358 (0.1160)
+l1_black_share                                 0.6864*** (0.1799)
+l1_hispanic_share                               -0.3017. (0.1526)
+l1_disp_mean_median_gap_z                                        
+l1_state_min_wage_nominal                                        
+l1_union_membership_rate                                         
+l1_qcew_private_avg_wkly_wage                                    
+l1_qcew_manufacturing_share                                      
+l1_qcew_professional_business_share                              
+Fixed-Effects:                      -----------------------------
+state                                                         Yes
+year                                                          Yes
+___________________________________ _____________________________
+S.E.: Clustered                                         by: state
+Observations                                                  455
+R2                                                        0.92255
+Within R2                                                 0.20835
+
+                                    weighted__fair_poor.. weighted__log_re..
+Dependent Var.:                     fair_poor_health_rate    log_real_pce_pc
+                                                                            
+l1_acs_gini_z                             0.0028 (0.0023)   -0.0063 (0.0046)
+l1_log_real_mean_income                  -0.0038 (0.0177) 0.3742*** (0.0668)
+l1_rpp_all_items                         -0.0002 (0.0005)    0.0015 (0.0015)
+l1_unemployment_rate                      0.0751 (0.0752)  0.4551** (0.1686)
+l1_hpi_yoy                               -0.0003 (0.0002)  -0.0018* (0.0009)
+l1_permits_per_1000                      -0.0008 (0.0009)   0.0034* (0.0017)
+l1_college_share                         -0.1142 (0.1353)  -0.5928. (0.3172)
+l1_black_share                         0.5749*** (0.1197)   -1.348* (0.5195)
+l1_hispanic_share                        -0.2347 (0.1442)   -0.4612 (0.3701)
+l1_disp_mean_median_gap_z                                                   
+l1_state_min_wage_nominal                                                   
+l1_union_membership_rate                                                    
+l1_qcew_private_avg_wkly_wage                                               
+l1_qcew_manufacturing_share                                                 
+l1_qcew_professional_business_share                                         
+Fixed-Effects:                      --------------------- ------------------
+state                                                 Yes                Yes
+year                                                  Yes                Yes
+___________________________________ _____________________ __________________
+S.E.: Clustered                                 by: state          by: state
+Observations                                          455                459
+R2                                                0.92718            0.98164
+Within R2                                         0.14525            0.38795
+
+                                    weighted__real_p..
+Dependent Var.:                     real_pce_pc_growth
+                                                      
+l1_acs_gini_z                         0.5217* (0.2485)
+l1_log_real_mean_income              -14.32*** (3.490)
+l1_rpp_all_items                    0.3760*** (0.0554)
+l1_unemployment_rate                     10.71 (17.81)
+l1_hpi_yoy                           -0.0598. (0.0342)
+l1_permits_per_1000                    0.0358 (0.1014)
+l1_college_share                        -11.29 (13.86)
+l1_black_share                         -38.12* (18.18)
+l1_hispanic_share                       -6.391 (19.40)
+l1_disp_mean_median_gap_z                             
+l1_state_min_wage_nominal                             
+l1_union_membership_rate                              
+l1_qcew_private_avg_wkly_wage                         
+l1_qcew_manufacturing_share                           
+l1_qcew_professional_business_share                   
+Fixed-Effects:                      ------------------
+state                                              Yes
+year                                               Yes
+___________________________________ __________________
+S.E.: Clustered                              by: state
+Observations                                       459
+R2                                             0.42126
+Within R2                                      0.25479
+
+                                    weighted__frequent_mental_d...1
+Dependent Var.:                       frequent_mental_distress_rate
+                                                                   
+l1_acs_gini_z                                                      
+l1_log_real_mean_income                            -0.0454 (0.0297)
+l1_rpp_all_items                                  -0.0011* (0.0005)
+l1_unemployment_rate                              0.2619** (0.0970)
+l1_hpi_yoy                                         -0.0003 (0.0003)
+l1_permits_per_1000                                0.0016. (0.0009)
+l1_college_share                                    0.0347 (0.1151)
+l1_black_share                                   0.7019*** (0.1745)
+l1_hispanic_share                                 -0.3024* (0.1496)
+l1_disp_mean_median_gap_z                          -0.0011 (0.0016)
+l1_state_min_wage_nominal                                          
+l1_union_membership_rate                                           
+l1_qcew_private_avg_wkly_wage                                      
+l1_qcew_manufacturing_share                                        
+l1_qcew_professional_business_share                                
+Fixed-Effects:                        -----------------------------
+state                                                           Yes
+year                                                            Yes
+___________________________________   _____________________________
+S.E.: Clustered                                           by: state
+Observations                                                    455
+R2                                                          0.92269
+Within R2                                                   0.20983
+
+                                    weighted__fair_poor...1
+Dependent Var.:                       fair_poor_health_rate
+                                                           
+l1_acs_gini_z                                              
+l1_log_real_mean_income                    -0.0066 (0.0213)
+l1_rpp_all_items                           -0.0002 (0.0005)
+l1_unemployment_rate                        0.0874 (0.0781)
+l1_hpi_yoy                                 -0.0003 (0.0002)
+l1_permits_per_1000                        -0.0008 (0.0010)
+l1_college_share                           -0.1439 (0.1334)
+l1_black_share                           0.5726*** (0.1191)
+l1_hispanic_share                          -0.2254 (0.1449)
+l1_disp_mean_median_gap_z                   0.0010 (0.0014)
+l1_state_min_wage_nominal                                  
+l1_union_membership_rate                                   
+l1_qcew_private_avg_wkly_wage                              
+l1_qcew_manufacturing_share                                
+l1_qcew_professional_business_share                        
+Fixed-Effects:                        ---------------------
+state                                                   Yes
+year                                                    Yes
+___________________________________   _____________________
+S.E.: Clustered                                   by: state
+Observations                                            455
+R2                                                  0.92699
+Within R2                                           0.14301
+
+                                    weighted__log_re...1 weighted__real_p...1
+Dependent Var.:                          log_real_pce_pc   real_pce_pc_growth
+                                                                             
+l1_acs_gini_z                                                                
+l1_log_real_mean_income               0.4221*** (0.0632)    -13.51*** (3.773)
+l1_rpp_all_items                         0.0017 (0.0015)   0.3818*** (0.0558)
+l1_unemployment_rate                    0.3526* (0.1676)        10.71 (18.60)
+l1_hpi_yoy                              -0.0016 (0.0010)     -0.0541 (0.0348)
+l1_permits_per_1000                     0.0029. (0.0016)      0.0136 (0.0987)
+l1_college_share                        -0.4735 (0.3090)       -15.26 (13.57)
+l1_black_share                          -1.240* (0.4920)      -35.40. (19.44)
+l1_hispanic_share                       -0.4997 (0.3477)       -5.259 (20.13)
+l1_disp_mean_median_gap_z             -0.0101** (0.0032)     -0.0527 (0.1900)
+l1_state_min_wage_nominal                                                    
+l1_union_membership_rate                                                     
+l1_qcew_private_avg_wkly_wage                                                
+l1_qcew_manufacturing_share                                                  
+l1_qcew_professional_business_share                                          
+Fixed-Effects:                        ------------------   ------------------
+state                                                Yes                  Yes
+year                                                 Yes                  Yes
+___________________________________   __________________   __________________
+S.E.: Clustered                                by: state            by: state
+Observations                                         459                  459
+R2                                               0.98242              0.41663
+Within R2                                        0.41408              0.24883
+---
+Signif. codes: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
