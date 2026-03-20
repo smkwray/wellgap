@@ -71,7 +71,7 @@ The robustness branches reinforce the null main read:
 
 - **CCE models:** Null across both outcomes and both control sets.
 - **Subgroup checks:** Null for both the 65+ and retiree subsamples.
-- **Measurement sensitivity:** Age-standardized outcomes are null. Precision-weighted fair/poor health reaches marginal significance under ordinary clustered inference in some specifications, but this is a less conservative inference standard than the CR2 results reported in the main table.
+- **Measurement sensitivity:** Age-standardized outcomes are null. Precision-weighted fair/poor health reaches marginal significance in some specifications. All robustness branches now report CR2/Satterthwaite inference alongside the main table (see `inference_standard` column in final tables).
 - **Falsification outcomes:** The primary treatment does not significantly predict frequent physical distress or mean bad physical health days.
 - **Hard outcomes:** The primary top-share treatment shows no significant association with suicide or drug poisoning mortality. Some associations appear under alternative inequality measures (Gini, mean-median gap) for suicide, but these are not the locked primary estimand.
 - **Extension outcomes:** Mostly null for the primary treatment. Some associations between the mean-median income gap and price-adjusted median income reach significance, but these are a different treatment variable.
@@ -207,15 +207,19 @@ Rscript -e 'source("R/30_model_fe.R"); panel <- read_panel(); run_primary_fe_mod
 Rscript R/98_validate_project.R
 ```
 
-If the intermediate data files already exist under `data/intermediate/`, the panel can be rebuilt without live API calls.
+The `data/` directory is not committed to the repository. A fresh clone can inspect all committed output tables and run `--mode=clone` validation, but rebuilding the panel from source requires API keys (`CENSUS_API_KEY`, `BEA_API_KEY`, `BLS_API_KEY` in `~/.Renviron`). If the intermediate data files already exist under `data/intermediate/`, the panel can be rebuilt without live API calls.
 
 **Validate:**
 
 ```bash
+# Full validation (requires data/intermediate/ and data/final/ from a prior build):
 Rscript R/98_validate_project.R
+
+# Clone-level smoke test (works on a fresh clone with no local data):
+Rscript R/98_validate_project.R --mode=clone
 ```
 
-Current validation: 77 pass, 1 warning (lagged HPI coverage), 0 failures.
+The clone smoke test verifies config, R script syntax, committed output tables, and output shape checks. Full validation additionally checks intermediate data files, panel structure, and coverage thresholds. Exploratory outputs (event study, DML, causal forest) produce warnings rather than failures if missing.
 
 </details>
 

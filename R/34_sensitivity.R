@@ -116,16 +116,29 @@ run_sample_split_fe <- function(
 }
 
 run_primary_sensitivity <- function(panel = read_panel()) {
-  treatment <- cfg$analysis$primary_treatments[[1]]
-  outcome <- cfg$analysis$primary_wellbeing_outcomes[[1]]
+  treatment <- analysis_primary_treatment()
+  outcome <- analysis_primary_outcome()
 
   placebo <- run_placebo_lead_test(panel, outcome = outcome, treatment = treatment)
   loo <- run_leave_one_state_out(panel, outcome = outcome, treatment = treatment)
   sample_splits <- run_sample_split_fe(panel, outcome = outcome, treatment = treatment)
+  run_sensemakr_lm(panel, outcome = outcome, treatment = treatment)
+
+  alt <- analysis_alternative_treatments()
+  if (length(alt) > 0 && alt[[1]] != treatment) {
+    alt_tr <- alt[[1]]
+    placebo <- dplyr::bind_rows(placebo,
+      run_placebo_lead_test(panel, outcome = outcome, treatment = alt_tr))
+    loo <- dplyr::bind_rows(loo,
+      run_leave_one_state_out(panel, outcome = outcome, treatment = alt_tr))
+    sample_splits <- dplyr::bind_rows(sample_splits,
+      run_sample_split_fe(panel, outcome = outcome, treatment = alt_tr))
+    run_sensemakr_lm(panel, outcome = outcome, treatment = alt_tr)
+  }
+
   safe_write_csv(placebo, path_project(cfg$paths$tables_root, "placebo_lead_test.csv"))
   safe_write_csv(loo, path_project(cfg$paths$tables_root, "leave_one_state_out.csv"))
   safe_write_csv(sample_splits, path_project(cfg$paths$tables_root, "sample_split_fe.csv"))
-  run_sensemakr_lm(panel, outcome = outcome, treatment = treatment)
 
   invisible(list(placebo = placebo, leave_one_out = loo, sample_splits = sample_splits))
 }

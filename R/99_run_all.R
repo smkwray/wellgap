@@ -65,7 +65,10 @@ run_core_pipeline <- function() {
   panel <- run_safely(build_state_year_panel(), "State-year panel build")
   if (is.null(panel)) return(invisible(NULL))
 
-  run_safely(run_project_validation(panel, require_model_outputs = FALSE), "Pre-model validation")
+  run_safely({
+    checks <- dplyr::bind_rows(validate_data_files(), validate_panel_structure(panel))
+    if (any(checks$status == "FAIL")) warning("Pre-model data checks have failures")
+  }, "Pre-model data validation")
   run_safely(run_primary_fe_models(panel), "Baseline FE models")
   run_safely(run_primary_local_projections(panel), "Local projections")
   run_safely(run_primary_dml(panel), "DML models")
@@ -92,7 +95,7 @@ run_core_pipeline <- function() {
   run_safely(run_subgroup_reverse_causality_checks(panel), "Wellbeing subgroup reverse-causality checks")
   run_safely(run_extended_outcomes_dynamic_fe(panel), "Extended wellbeing/material outcomes")
   run_safely(run_final_table_builds(panel), "Final locked tables")
-  run_safely(run_project_validation(panel, require_model_outputs = TRUE), "Post-model validation")
+  run_safely(run_project_validation(panel, mode = "author_full"), "Post-model validation")
 
   invisible(panel)
 }

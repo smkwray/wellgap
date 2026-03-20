@@ -42,7 +42,17 @@ analysis_secondary_outcome <- function() {
 }
 
 analysis_primary_treatment <- function() {
-  analysis_final_estimand()$primary_treatment %||% analysis_wellbeing_primary_treatments()[[1]]
+  cfg$analysis$final_estimand$primary_treatment %||%
+    cfg$analysis$primary_treatment %||%
+    analysis_wellbeing_primary_treatments()[[1]]
+}
+
+analysis_alternative_treatments <- function() {
+  cfg_vec(cfg$analysis$alternative_treatments %||% cfg$analysis$primary_treatments)
+}
+
+analysis_all_treatments <- function() {
+  unique(c(analysis_primary_treatment(), analysis_alternative_treatments()))
 }
 
 analysis_causal_core_controls <- function() {
@@ -62,7 +72,8 @@ analysis_causal_main_years <- function() {
 }
 
 analysis_wellbeing_primary_treatments <- function() {
-  cfg_vec(cfg$analysis$wellbeing_primary_treatments %||% cfg$analysis$primary_treatments)
+  cfg_vec(cfg$analysis$wellbeing_primary_treatments %||%
+    c(cfg$analysis$primary_treatment, cfg$analysis$alternative_treatments))
 }
 
 analysis_wellbeing_secondary_treatments <- function() {

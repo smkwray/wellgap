@@ -127,7 +127,7 @@ run_local_projections <- function(
 
 run_primary_fe_models <- function(panel = read_panel()) {
   specs <- analysis_model_specs(include_weighted = TRUE)
-  treatments <- cfg_vec(cfg$analysis$primary_treatments)
+  treatments <- analysis_all_treatments()
   outcomes <- c(cfg_vec(cfg$analysis$primary_wellbeing_outcomes), cfg_vec(cfg$analysis$primary_consumption_outcomes))
   outcomes <- outcomes[outcomes %in% names(panel)]
   treatments <- treatments[treatments %in% names(panel)]
@@ -164,6 +164,7 @@ run_primary_fe_models <- function(panel = read_panel()) {
             control_count = length(controls),
             outcome = y,
             treatment = tr,
+            treatment_role = if (tr == analysis_primary_treatment()) "primary" else "alternative",
             model = mod_name,
             n_obs = stats::nobs(mod)
           )
@@ -184,7 +185,7 @@ run_primary_fe_models <- function(panel = read_panel()) {
 
 run_primary_local_projections <- function(panel = read_panel()) {
   specs <- analysis_model_specs(include_weighted = TRUE)
-  treatments <- cfg_vec(cfg$analysis$primary_treatments)
+  treatments <- analysis_all_treatments()
   outcomes <- c(cfg_vec(cfg$analysis$primary_wellbeing_outcomes), cfg_vec(cfg$analysis$primary_consumption_outcomes))
   outcomes <- outcomes[outcomes %in% names(panel)]
   treatments <- treatments[treatments %in% names(panel)]
@@ -208,7 +209,8 @@ run_primary_local_projections <- function(panel = read_panel()) {
             spec = spec_name,
             weighted = is_weighted,
             weight_var = weight_name,
-            control_count = length(controls)
+            control_count = length(controls),
+            treatment_role = if (tr == analysis_primary_treatment()) "primary" else "alternative"
           )
       })
     })

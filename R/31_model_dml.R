@@ -241,7 +241,7 @@ run_primary_dml <- function(panel = read_panel()) {
     rich = analysis_rich_controls()
   )
   x_specs <- x_specs[!duplicated(vapply(x_specs, paste, character(1), collapse = "|"))]
-  treatments <- cfg_vec(cfg$analysis$primary_treatments)
+  treatments <- analysis_all_treatments()
   outcomes <- c(cfg_vec(cfg$analysis$primary_wellbeing_outcomes), cfg_vec(cfg$analysis$primary_consumption_outcomes))
   treatments <- treatments[treatments %in% names(panel)]
   outcomes <- outcomes[outcomes %in% names(panel)]
@@ -254,7 +254,8 @@ run_primary_dml <- function(panel = read_panel()) {
         benchmark_dml(panel, outcome = y, treatment = tr, x_vars = x_vars) |>
           dplyr::mutate(
             spec = spec_name,
-            x_var_count = length(intersect(x_vars, names(panel)))
+            x_var_count = length(intersect(x_vars, names(panel))),
+            treatment_role = if (tr == analysis_primary_treatment()) "primary" else "alternative"
           )
       })
     })

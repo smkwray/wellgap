@@ -94,7 +94,8 @@ analysis:
     secondary_outcome: "fair_poor_health_rate"
     primary_treatment: "l1_disp_top10_share_z"
     sample_label: "2012_2019"
-  primary_treatments:
+  primary_treatment: "l1_disp_top10_share_z"
+  alternative_treatments:
     - "l1_acs_gini_z"
     - "l1_disp_mean_median_gap_z"
   wellbeing_primary_treatments:

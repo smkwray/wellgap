@@ -1,12 +1,14 @@
 # Validation Report
 
-- Generated: 2026-03-14 09:31:35 EDT
-- PASS: 77
+- Generated: 2026-03-20 19:00:23 EDT
+- PASS: 84
 - WARN: 1
 - FAIL: 0
 
 | Check | Status | Detail |
 |---|---|---|
+| config_primary_treatment_consistent | PASS | final_estimand=l1_disp_top10_share_z analysis=l1_disp_top10_share_z |
+| config_primary_not_in_alternatives | PASS | primary=l1_disp_top10_share_z alternatives=l1_acs_gini_z,l1_disp_mean_median_gap_z |
 | file_exists data/intermediate/bea_state_core.csv | PASS | data/intermediate/bea_state_core.csv |
 | file_exists data/intermediate/bea_distribution_state_year.csv | PASS | data/intermediate/bea_distribution_state_year.csv |
 | file_exists data/intermediate/acs_state_year.csv | PASS | data/intermediate/acs_state_year.csv |
@@ -23,11 +25,9 @@
 | file_exists output/tables/baseline_fe_coefficients.csv | PASS | output/tables/baseline_fe_coefficients.csv |
 | file_exists output/tables/fe_spec_coefficients.csv | PASS | output/tables/fe_spec_coefficients.csv |
 | file_exists output/tables/local_projection_coefficients.csv | PASS | output/tables/local_projection_coefficients.csv |
-| file_exists output/tables/dml_results.csv | PASS | output/tables/dml_results.csv |
 | file_exists output/tables/placebo_lead_test.csv | PASS | output/tables/placebo_lead_test.csv |
 | file_exists output/tables/leave_one_state_out.csv | PASS | output/tables/leave_one_state_out.csv |
 | file_exists output/tables/sample_split_fe.csv | PASS | output/tables/sample_split_fe.csv |
-| file_exists output/tables/event_study_coefficients.csv | PASS | output/tables/event_study_coefficients.csv |
 | file_exists output/tables/wellbeing_dynamic_fe.csv | PASS | output/tables/wellbeing_dynamic_fe.csv |
 | file_exists output/tables/wellbeing_longdiff_coefficients.csv | PASS | output/tables/wellbeing_longdiff_coefficients.csv |
 | file_exists output/tables/wellbeing_cce_dynamic_fe.csv | PASS | output/tables/wellbeing_cce_dynamic_fe.csv |
@@ -40,6 +40,8 @@
 | file_exists output/tables/final_hard_outcome_table.csv | PASS | output/tables/final_hard_outcome_table.csv |
 | file_exists output/tables/final_extension_outcomes_table.csv | PASS | output/tables/final_extension_outcomes_table.csv |
 | file_exists output/tables/wellbeing_subgroup_dynamic_fe.csv | PASS | output/tables/wellbeing_subgroup_dynamic_fe.csv |
+| file_exists output/tables/dml_results.csv | PASS | output/tables/dml_results.csv |
+| file_exists output/tables/event_study_coefficients.csv | PASS | output/tables/event_study_coefficients.csv |
 | file_exists output/tables/causal_forest_ate.csv | PASS | output/tables/causal_forest_ate.csv |
 | file_exists output/tables/causal_forest_importance.csv | PASS | output/tables/causal_forest_importance.csv |
 | panel_row_count | PASS | rows=612 expected=612 |
@@ -73,10 +75,10 @@
 | coverage employment_to_population_ratio | PASS | non_missing=612 threshold=600 |
 | coverage log_rpp_adj_median_hh_income | PASS | non_missing=612 threshold=600 |
 | fe_specs_present | PASS | specs=baseline,rich,weighted |
-| fe_distribution_treatment_present | PASS | treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z |
+| fe_primary_treatment_present | PASS | treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z,l1_disp_top10_share_z |
 | dml_specs_present | PASS | specs=baseline,rich |
-| dml_distribution_treatment_present | PASS | treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z |
-| sample_split_rows | PASS | rows=5 |
+| dml_primary_treatment_present | PASS | treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z,l1_disp_top10_share_z |
+| sample_split_rows | PASS | rows=10 |
 | wellbeing_dynamic_primary_treatment_present | PASS | treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z,l1_disp_top10_share_z |
 | wellbeing_subgroups_present | PASS | subgroups=age_65_plus,retired |
 | wellbeing_cce_primary_treatment_present | PASS | treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z,l1_disp_top10_share_z |
@@ -85,3 +87,8 @@
 | wellbeing_hard_outcomes_present | PASS | outcomes=drug_poisoning_age_adjusted_rate,suicide_age_adjusted_rate |
 | extended_outcome_families_present | PASS | families=material_wellbeing,secondary_wellbeing |
 | final_main_table_primary_treatment_present | PASS | treatments=l1_disp_top10_share_z |
+| final_main_table_inference_standard | PASS | has_col=TRUE values=CR2_Satterthwaite |
+| final_robustness_table_inference_standard | PASS | has_col=TRUE |
+| final_robustness_table_primary_treatment_only | PASS | treatments=l1_disp_top10_share_z |
+| final_hard_outcome_table_inference_standard | PASS | has_col=TRUE |
+| final_extension_table_inference_standard | PASS | has_col=TRUE |

@@ -1,4 +1,6 @@
 check,status,severity,detail
+config_primary_treatment_consistent,PASS,error,final_estimand=l1_disp_top10_share_z analysis=l1_disp_top10_share_z
+config_primary_not_in_alternatives,PASS,error,"primary=l1_disp_top10_share_z alternatives=l1_acs_gini_z,l1_disp_mean_median_gap_z"
 file_exists data/intermediate/bea_state_core.csv,PASS,error,data/intermediate/bea_state_core.csv
 file_exists data/intermediate/bea_distribution_state_year.csv,PASS,error,data/intermediate/bea_distribution_state_year.csv
 file_exists data/intermediate/acs_state_year.csv,PASS,error,data/intermediate/acs_state_year.csv
@@ -15,11 +17,9 @@ file_exists data/final/state_year_panel.rds,PASS,error,data/final/state_year_pan
 file_exists output/tables/baseline_fe_coefficients.csv,PASS,error,output/tables/baseline_fe_coefficients.csv
 file_exists output/tables/fe_spec_coefficients.csv,PASS,error,output/tables/fe_spec_coefficients.csv
 file_exists output/tables/local_projection_coefficients.csv,PASS,error,output/tables/local_projection_coefficients.csv
-file_exists output/tables/dml_results.csv,PASS,error,output/tables/dml_results.csv
 file_exists output/tables/placebo_lead_test.csv,PASS,error,output/tables/placebo_lead_test.csv
 file_exists output/tables/leave_one_state_out.csv,PASS,error,output/tables/leave_one_state_out.csv
 file_exists output/tables/sample_split_fe.csv,PASS,error,output/tables/sample_split_fe.csv
-file_exists output/tables/event_study_coefficients.csv,PASS,error,output/tables/event_study_coefficients.csv
 file_exists output/tables/wellbeing_dynamic_fe.csv,PASS,error,output/tables/wellbeing_dynamic_fe.csv
 file_exists output/tables/wellbeing_longdiff_coefficients.csv,PASS,error,output/tables/wellbeing_longdiff_coefficients.csv
 file_exists output/tables/wellbeing_cce_dynamic_fe.csv,PASS,error,output/tables/wellbeing_cce_dynamic_fe.csv
@@ -32,8 +32,10 @@ file_exists output/tables/final_robustness_wellbeing_table.csv,PASS,error,output
 file_exists output/tables/final_hard_outcome_table.csv,PASS,error,output/tables/final_hard_outcome_table.csv
 file_exists output/tables/final_extension_outcomes_table.csv,PASS,error,output/tables/final_extension_outcomes_table.csv
 file_exists output/tables/wellbeing_subgroup_dynamic_fe.csv,PASS,error,output/tables/wellbeing_subgroup_dynamic_fe.csv
-file_exists output/tables/causal_forest_ate.csv,PASS,error,output/tables/causal_forest_ate.csv
-file_exists output/tables/causal_forest_importance.csv,PASS,error,output/tables/causal_forest_importance.csv
+file_exists output/tables/dml_results.csv,PASS,warn,output/tables/dml_results.csv
+file_exists output/tables/event_study_coefficients.csv,PASS,warn,output/tables/event_study_coefficients.csv
+file_exists output/tables/causal_forest_ate.csv,PASS,warn,output/tables/causal_forest_ate.csv
+file_exists output/tables/causal_forest_importance.csv,PASS,warn,output/tables/causal_forest_importance.csv
 panel_row_count,PASS,error,rows=612 expected=612
 panel_state_count,PASS,error,states=51 expected=51
 panel_years_match,PASS,error,"years=2012,2013,2014,2015,2016,2017,2018,2019,2021,2022,2023,2024"
@@ -65,10 +67,10 @@ coverage drug_poisoning_age_adjusted_rate,PASS,warn,non_missing=408 threshold=40
 coverage employment_to_population_ratio,PASS,warn,non_missing=612 threshold=600
 coverage log_rpp_adj_median_hh_income,PASS,warn,non_missing=612 threshold=600
 fe_specs_present,PASS,error,"specs=baseline,rich,weighted"
-fe_distribution_treatment_present,PASS,error,"treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z"
+fe_primary_treatment_present,PASS,error,"treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z,l1_disp_top10_share_z"
 dml_specs_present,PASS,error,"specs=baseline,rich"
-dml_distribution_treatment_present,PASS,error,"treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z"
-sample_split_rows,PASS,error,rows=5
+dml_primary_treatment_present,PASS,error,"treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z,l1_disp_top10_share_z"
+sample_split_rows,PASS,error,rows=10
 wellbeing_dynamic_primary_treatment_present,PASS,error,"treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z,l1_disp_top10_share_z"
 wellbeing_subgroups_present,PASS,error,"subgroups=age_65_plus,retired"
 wellbeing_cce_primary_treatment_present,PASS,error,"treatments=l1_acs_gini_z,l1_disp_mean_median_gap_z,l1_disp_top10_share_z"
@@ -77,3 +79,8 @@ wellbeing_falsification_outcomes_present,PASS,error,"outcomes=frequent_physical_
 wellbeing_hard_outcomes_present,PASS,error,"outcomes=drug_poisoning_age_adjusted_rate,suicide_age_adjusted_rate"
 extended_outcome_families_present,PASS,error,"families=material_wellbeing,secondary_wellbeing"
 final_main_table_primary_treatment_present,PASS,error,treatments=l1_disp_top10_share_z
+final_main_table_inference_standard,PASS,error,has_col=TRUE values=CR2_Satterthwaite
+final_robustness_table_inference_standard,PASS,error,has_col=TRUE
+final_robustness_table_primary_treatment_only,PASS,error,treatments=l1_disp_top10_share_z
+final_hard_outcome_table_inference_standard,PASS,error,has_col=TRUE
+final_extension_table_inference_standard,PASS,error,has_col=TRUE

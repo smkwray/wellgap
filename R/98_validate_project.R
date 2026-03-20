@@ -34,59 +34,92 @@ make_check <- function(check, ok, detail, severity = "error") {
   )
 }
 
-validate_required_files <- function(require_model_outputs = TRUE) {
-  files <- c(
-    "data/intermediate/bea_state_core.csv",
-    "data/intermediate/bea_distribution_state_year.csv",
-    "data/intermediate/acs_state_year.csv",
-    "data/intermediate/brfss_state_year.csv",
-    "data/intermediate/brfss_state_year_subgroups.csv",
-    "data/intermediate/brfss_age_reference_weights.csv",
-    "data/intermediate/cdc_wonder_state_year.csv",
-    "data/intermediate/fhfa_state_hpi.csv",
-    "data/intermediate/building_permits_state_year.csv",
-    "data/intermediate/state_minimum_wage.csv",
-    "data/intermediate/union_membership_state_year.csv",
-    "data/intermediate/qcew_state_year.csv",
-    "data/final/state_year_panel.rds"
-  )
+intermediate_data_files <- c(
+  "data/intermediate/bea_state_core.csv",
+  "data/intermediate/bea_distribution_state_year.csv",
+  "data/intermediate/acs_state_year.csv",
+  "data/intermediate/brfss_state_year.csv",
+  "data/intermediate/brfss_state_year_subgroups.csv",
+  "data/intermediate/brfss_age_reference_weights.csv",
+  "data/intermediate/cdc_wonder_state_year.csv",
+  "data/intermediate/fhfa_state_hpi.csv",
+  "data/intermediate/building_permits_state_year.csv",
+  "data/intermediate/state_minimum_wage.csv",
+  "data/intermediate/union_membership_state_year.csv",
+  "data/intermediate/qcew_state_year.csv",
+  "data/final/state_year_panel.rds"
+)
 
-  if (isTRUE(require_model_outputs)) {
-    files <- c(
-      files,
-      "output/tables/baseline_fe_coefficients.csv",
-      "output/tables/fe_spec_coefficients.csv",
-      "output/tables/local_projection_coefficients.csv",
-      "output/tables/dml_results.csv",
-      "output/tables/placebo_lead_test.csv",
-      "output/tables/leave_one_state_out.csv",
-      "output/tables/sample_split_fe.csv",
-      "output/tables/event_study_coefficients.csv",
-      "output/tables/wellbeing_dynamic_fe.csv",
-      "output/tables/wellbeing_longdiff_coefficients.csv",
-      "output/tables/wellbeing_cce_dynamic_fe.csv",
-      "output/tables/wellbeing_measurement_sensitivity.csv",
-      "output/tables/wellbeing_falsification_dynamic_fe.csv",
-      "output/tables/wellbeing_hard_outcome_falsification.csv",
-      "output/tables/extended_outcomes_dynamic_fe.csv",
-      "output/tables/final_main_wellbeing_table.csv",
-      "output/tables/final_robustness_wellbeing_table.csv",
-      "output/tables/final_hard_outcome_table.csv",
-      "output/tables/final_extension_outcomes_table.csv",
-      "output/tables/wellbeing_subgroup_dynamic_fe.csv",
-      "output/tables/causal_forest_ate.csv",
-      "output/tables/causal_forest_importance.csv"
+core_output_files <- c(
+  "output/tables/baseline_fe_coefficients.csv",
+  "output/tables/fe_spec_coefficients.csv",
+  "output/tables/local_projection_coefficients.csv",
+  "output/tables/placebo_lead_test.csv",
+  "output/tables/leave_one_state_out.csv",
+  "output/tables/sample_split_fe.csv",
+  "output/tables/wellbeing_dynamic_fe.csv",
+  "output/tables/wellbeing_longdiff_coefficients.csv",
+  "output/tables/wellbeing_cce_dynamic_fe.csv",
+  "output/tables/wellbeing_measurement_sensitivity.csv",
+  "output/tables/wellbeing_falsification_dynamic_fe.csv",
+  "output/tables/wellbeing_hard_outcome_falsification.csv",
+  "output/tables/extended_outcomes_dynamic_fe.csv",
+  "output/tables/final_main_wellbeing_table.csv",
+  "output/tables/final_robustness_wellbeing_table.csv",
+  "output/tables/final_hard_outcome_table.csv",
+  "output/tables/final_extension_outcomes_table.csv",
+  "output/tables/wellbeing_subgroup_dynamic_fe.csv"
+)
+
+exploratory_output_files <- c(
+  "output/tables/dml_results.csv",
+  "output/tables/event_study_coefficients.csv",
+  "output/tables/causal_forest_ate.csv",
+  "output/tables/causal_forest_importance.csv"
+)
+
+validate_data_files <- function() {
+  purrr::map_dfr(intermediate_data_files, function(f) {
+    make_check(
+      check = paste("file_exists", f),
+      ok = file.exists(path_project(f)),
+      detail = f
+    )
+  })
+}
+
+validate_required_files <- function(mode = c("author_full", "clone_smoke_test")) {
+  mode <- match.arg(mode)
+  checks <- list()
+
+  if (mode == "author_full") {
+    for (f in intermediate_data_files) {
+      checks[[length(checks) + 1]] <- make_check(
+        check = paste("file_exists", f),
+        ok = file.exists(path_project(f)),
+        detail = f
+      )
+    }
+  }
+
+  for (f in core_output_files) {
+    checks[[length(checks) + 1]] <- make_check(
+      check = paste("file_exists", f),
+      ok = file.exists(path_project(f)),
+      detail = f
     )
   }
 
-  purrr::map_dfr(files, function(rel_path) {
-    abs_path <- path_project(rel_path)
-    make_check(
-      check = paste("file_exists", rel_path),
-      ok = file.exists(abs_path),
-      detail = rel_path
+  for (f in exploratory_output_files) {
+    checks[[length(checks) + 1]] <- make_check(
+      check = paste("file_exists", f),
+      ok = file.exists(path_project(f)),
+      detail = f,
+      severity = "warn"
     )
-  })
+  }
+
+  dplyr::bind_rows(checks)
 }
 
 validate_panel_structure <- function(panel) {
@@ -168,6 +201,31 @@ validate_panel_structure <- function(panel) {
   dplyr::bind_rows(checks, coverage)
 }
 
+validate_config_consistency <- function() {
+  estimand_treatment <- cfg$analysis$final_estimand$primary_treatment
+  top_level_treatment <- cfg$analysis$primary_treatment
+  checks <- list()
+
+  if (!is.null(estimand_treatment) && !is.null(top_level_treatment)) {
+    checks[[1]] <- make_check(
+      "config_primary_treatment_consistent",
+      identical(estimand_treatment, top_level_treatment),
+      sprintf("final_estimand=%s analysis=%s", estimand_treatment, top_level_treatment)
+    )
+  }
+
+  alt <- cfg_vec(cfg$analysis$alternative_treatments)
+  if (!is.null(alt) && !is.null(top_level_treatment)) {
+    checks[[length(checks) + 1]] <- make_check(
+      "config_primary_not_in_alternatives",
+      !(top_level_treatment %in% alt),
+      sprintf("primary=%s alternatives=%s", top_level_treatment, paste(alt, collapse = ","))
+    )
+  }
+
+  dplyr::bind_rows(checks)
+}
+
 validate_output_shapes <- function() {
   checks <- list()
 
@@ -180,8 +238,8 @@ validate_output_shapes <- function() {
     )
     if ("treatment" %in% names(fe)) {
       checks[[length(checks) + 1]] <- make_check(
-        "fe_distribution_treatment_present",
-        "l1_disp_mean_median_gap_z" %in% fe$treatment,
+        "fe_primary_treatment_present",
+        analysis_primary_treatment() %in% fe$treatment,
         sprintf("treatments=%s", paste(sort(unique(fe$treatment)), collapse = ","))
       )
     }
@@ -196,8 +254,8 @@ validate_output_shapes <- function() {
     )
     if ("treatment" %in% names(dml)) {
       checks[[length(checks) + 1]] <- make_check(
-        "dml_distribution_treatment_present",
-        "l1_disp_mean_median_gap_z" %in% dml$treatment,
+        "dml_primary_treatment_present",
+        analysis_primary_treatment() %in% dml$treatment,
         sprintf("treatments=%s", paste(sort(unique(dml$treatment)), collapse = ","))
       )
     }
@@ -216,7 +274,7 @@ validate_output_shapes <- function() {
     dyn <- safe_read_csv(path_project("output/tables/wellbeing_dynamic_fe.csv"))
     checks[[length(checks) + 1]] <- make_check(
       "wellbeing_dynamic_primary_treatment_present",
-      "l1_disp_top10_share_z" %in% dyn$treatment,
+      analysis_primary_treatment() %in% dyn$treatment,
       sprintf("treatments=%s", paste(sort(unique(dyn$treatment)), collapse = ","))
     )
   }
@@ -234,7 +292,7 @@ validate_output_shapes <- function() {
     cce <- safe_read_csv(path_project("output/tables/wellbeing_cce_dynamic_fe.csv"))
     checks[[length(checks) + 1]] <- make_check(
       "wellbeing_cce_primary_treatment_present",
-      "l1_disp_top10_share_z" %in% cce$treatment,
+      analysis_primary_treatment() %in% cce$treatment,
       sprintf("treatments=%s", paste(sort(unique(cce$treatment)), collapse = ","))
     )
   }
@@ -282,6 +340,50 @@ validate_output_shapes <- function() {
       analysis_primary_treatment() %in% final_main$treatment,
       sprintf("treatments=%s", paste(sort(unique(final_main$treatment)), collapse = ","))
     )
+    checks[[length(checks) + 1]] <- make_check(
+      "final_main_table_inference_standard",
+      "inference_standard" %in% names(final_main) &&
+        all(final_main$inference_standard == "CR2_Satterthwaite"),
+      sprintf("has_col=%s values=%s",
+        "inference_standard" %in% names(final_main),
+        if ("inference_standard" %in% names(final_main))
+          paste(sort(unique(final_main$inference_standard)), collapse = ",")
+        else "missing")
+    )
+  }
+
+  if (file.exists(path_project("output/tables/final_robustness_wellbeing_table.csv"))) {
+    final_rob <- safe_read_csv(path_project("output/tables/final_robustness_wellbeing_table.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "final_robustness_table_inference_standard",
+      "inference_standard" %in% names(final_rob),
+      sprintf("has_col=%s", "inference_standard" %in% names(final_rob))
+    )
+    checks[[length(checks) + 1]] <- make_check(
+      "final_robustness_table_primary_treatment_only",
+      all(final_rob$treatment == analysis_primary_treatment()),
+      sprintf("treatments=%s", paste(sort(unique(final_rob$treatment)), collapse = ","))
+    )
+  }
+
+  if (file.exists(path_project("output/tables/final_hard_outcome_table.csv"))) {
+    final_hard <- safe_read_csv(path_project("output/tables/final_hard_outcome_table.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "final_hard_outcome_table_inference_standard",
+      "inference_standard" %in% names(final_hard) &&
+        all(final_hard$inference_standard == "conventional_clustered"),
+      sprintf("has_col=%s", "inference_standard" %in% names(final_hard))
+    )
+  }
+
+  if (file.exists(path_project("output/tables/final_extension_outcomes_table.csv"))) {
+    final_ext <- safe_read_csv(path_project("output/tables/final_extension_outcomes_table.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "final_extension_table_inference_standard",
+      "inference_standard" %in% names(final_ext) &&
+        all(final_ext$inference_standard == "conventional_clustered"),
+      sprintf("has_col=%s", "inference_standard" %in% names(final_ext))
+    )
   }
 
   if (length(checks) == 0) return(tibble::tibble())
@@ -311,10 +413,54 @@ write_validation_report <- function(checks) {
   list(csv = csv_path, md = md_path)
 }
 
-run_project_validation <- function(panel = NULL, require_model_outputs = TRUE) {
+run_clone_smoke_test <- function() {
+  checks <- list()
+
+  cfg_path <- path_project("config", "config.yml")
+  checks[[1]] <- make_check("config_parseable", file.exists(cfg_path), cfg_path)
+
+  r_scripts <- list.files(path_project("R"), pattern = "\\.R$", full.names = TRUE)
+  for (script in r_scripts) {
+    parsed_ok <- tryCatch({ parse(script); TRUE }, error = function(e) FALSE)
+    checks[[length(checks) + 1]] <- make_check(
+      paste("script_parses", basename(script)),
+      parsed_ok,
+      basename(script)
+    )
+  }
+
+  config_checks <- validate_config_consistency()
+  file_checks <- validate_required_files(mode = "clone_smoke_test")
+  shape_checks <- validate_output_shapes()
+
+  all_checks <- dplyr::bind_rows(
+    dplyr::bind_rows(checks),
+    config_checks,
+    file_checks,
+    shape_checks
+  )
+
+  outputs <- write_validation_report(all_checks)
+  note("Clone smoke test written to {outputs$md}")
+
+  if (any(all_checks$status == "FAIL")) {
+    warning("Clone smoke test has failures. See ", outputs$md, call. = FALSE)
+  }
+
+  invisible(all_checks)
+}
+
+run_project_validation <- function(panel = NULL, mode = c("author_full", "clone_smoke_test")) {
+  mode <- match.arg(mode)
+
+  if (mode == "clone_smoke_test") {
+    return(run_clone_smoke_test())
+  }
+
   panel <- panel %||% read_panel()
   checks <- dplyr::bind_rows(
-    validate_required_files(require_model_outputs = require_model_outputs),
+    validate_config_consistency(),
+    validate_required_files(mode = "author_full"),
     validate_panel_structure(panel),
     validate_output_shapes()
   )
@@ -330,5 +476,7 @@ run_project_validation <- function(panel = NULL, require_model_outputs = TRUE) {
 }
 
 if (sys.nframe() == 0) {
-  run_project_validation()
+  args <- commandArgs(trailingOnly = TRUE)
+  mode <- if ("--mode=clone" %in% args) "clone_smoke_test" else "author_full"
+  run_project_validation(mode = mode)
 }
