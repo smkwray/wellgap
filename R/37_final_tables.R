@@ -191,17 +191,25 @@ build_final_wellbeing_robustness_table <- function(panel = read_panel()) {
 }
 
 build_final_hard_outcome_table <- function() {
+  primary <- analysis_primary_treatment()
   out <- safe_read_csv(path_project(cfg$paths$tables_root, "wellbeing_hard_outcome_falsification.csv")) |>
-    dplyr::mutate(inference_standard = "conventional_clustered") |>
-    dplyr::arrange(p.value)
+    dplyr::mutate(
+      inference_standard = "conventional_clustered",
+      treatment_role = dplyr::if_else(treatment == primary, "primary", "alternative")
+    ) |>
+    dplyr::arrange(treatment_role != "primary", p.value)
   safe_write_csv(out, path_project(cfg$paths$tables_root, "final_hard_outcome_table.csv"))
   invisible(out)
 }
 
 build_final_extension_outcomes_table <- function() {
+  primary <- analysis_primary_treatment()
   out <- safe_read_csv(path_project(cfg$paths$tables_root, "extended_outcomes_dynamic_fe.csv")) |>
-    dplyr::mutate(inference_standard = "conventional_clustered") |>
-    dplyr::arrange(p.value)
+    dplyr::mutate(
+      inference_standard = "conventional_clustered",
+      treatment_role = dplyr::if_else(treatment == primary, "primary", "alternative")
+    ) |>
+    dplyr::arrange(treatment_role != "primary", p.value)
   safe_write_csv(out, path_project(cfg$paths$tables_root, "final_extension_outcomes_table.csv"))
   invisible(out)
 }

@@ -69,9 +69,9 @@ The long-difference models produce a negative point estimate for mental distress
 
 The robustness branches reinforce the null main read:
 
-- **CCE models:** Null across both outcomes and both control sets.
-- **Subgroup checks:** Null for both the 65+ and retiree subsamples.
-- **Measurement sensitivity:** Age-standardized outcomes are null. Precision-weighted fair/poor health reaches marginal significance in some specifications. All robustness branches now report CR2/Satterthwaite inference alongside the main table (see `inference_standard` column in final tables).
+- **CCE models:** Null across both outcomes (baseline specification).
+- **Subgroup checks:** Null for both the 65+ and retiree subsamples (conventional clustered inference; CR2 is numerically unstable for these smaller subgroups).
+- **Measurement sensitivity:** Age-standardized outcomes are null. Precision-weighted fair/poor health reaches marginal significance in some specifications. The committed final robustness table uses baseline-spec rows with CR2/Satterthwaite inference where numerically feasible and labels each row's inference standard explicitly (see `inference_standard` column).
 - **Falsification outcomes:** The primary treatment does not significantly predict frequent physical distress or mean bad physical health days.
 - **Hard outcomes:** The primary top-share treatment shows no significant association with suicide or drug poisoning mortality. Some associations appear under alternative inequality measures (Gini, mean-median gap) for suicide, but these are not the locked primary estimand.
 - **Extension outcomes:** Mostly null for the primary treatment. Some associations between the mean-median income gap and price-adjusted median income reach significance, but these are a different treatment variable.
@@ -188,6 +188,7 @@ docs/                    Scope, data source, and design documentation
 ```
 CENSUS_API_KEY=your_key
 BEA_API_KEY=your_key
+BLS_API_KEY=your_key
 ```
 
 **Run the full pipeline:**
