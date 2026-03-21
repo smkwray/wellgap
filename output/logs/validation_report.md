@@ -1,13 +1,13 @@
 # Validation Report
 
-- Generated: 2026-03-21 06:22:23 EDT
+- Generated: 2026-03-21 07:12:03 EDT
 - PASS: 84
 - WARN: 1
 - FAIL: 0
 
 | Check | Status | Detail |
 |---|---|---|
-| config_primary_treatment_consistent | PASS | final_estimand=l1_disp_top10_share_z analysis=l1_disp_top10_share_z |
+| config_primary_treatment_defined | PASS | primary=l1_disp_top10_share_z |
 | config_primary_not_in_alternatives | PASS | primary=l1_disp_top10_share_z alternatives=l1_acs_gini_z,l1_disp_mean_median_gap_z |
 | file_exists data/intermediate/bea_state_core.csv | PASS | data/intermediate/bea_state_core.csv |
 | file_exists data/intermediate/bea_distribution_state_year.csv | PASS | data/intermediate/bea_distribution_state_year.csv |

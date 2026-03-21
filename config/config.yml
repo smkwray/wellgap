@@ -92,7 +92,6 @@ analysis:
   final_estimand:
     primary_outcome: "frequent_mental_distress_rate"
     secondary_outcome: "fair_poor_health_rate"
-    primary_treatment: "l1_disp_top10_share_z"
     sample_label: "2012_2019"
   primary_treatment: "l1_disp_top10_share_z"
   alternative_treatments:

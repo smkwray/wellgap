@@ -202,24 +202,21 @@ validate_panel_structure <- function(panel) {
 }
 
 validate_config_consistency <- function() {
-  estimand_treatment <- cfg$analysis$final_estimand$primary_treatment
-  top_level_treatment <- cfg$analysis$primary_treatment
+  primary <- cfg$analysis$primary_treatment
+  alt <- cfg_vec(cfg$analysis$alternative_treatments)
   checks <- list()
 
-  if (!is.null(estimand_treatment) && !is.null(top_level_treatment)) {
-    checks[[1]] <- make_check(
-      "config_primary_treatment_consistent",
-      identical(estimand_treatment, top_level_treatment),
-      sprintf("final_estimand=%s analysis=%s", estimand_treatment, top_level_treatment)
-    )
-  }
+  checks[[1]] <- make_check(
+    "config_primary_treatment_defined",
+    !is.null(primary) && nzchar(primary),
+    sprintf("primary=%s", primary %||% "NULL")
+  )
 
-  alt <- cfg_vec(cfg$analysis$alternative_treatments)
-  if (!is.null(alt) && !is.null(top_level_treatment)) {
+  if (!is.null(alt) && !is.null(primary)) {
     checks[[length(checks) + 1]] <- make_check(
       "config_primary_not_in_alternatives",
-      !(top_level_treatment %in% alt),
-      sprintf("primary=%s alternatives=%s", top_level_treatment, paste(alt, collapse = ","))
+      !(primary %in% alt),
+      sprintf("primary=%s alternatives=%s", primary, paste(alt, collapse = ","))
     )
   }
 

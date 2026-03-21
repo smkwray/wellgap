@@ -42,8 +42,7 @@ analysis_secondary_outcome <- function() {
 }
 
 analysis_primary_treatment <- function() {
-  cfg$analysis$final_estimand$primary_treatment %||%
-    cfg$analysis$primary_treatment %||%
+  cfg$analysis$primary_treatment %||%
     analysis_wellbeing_primary_treatments()[[1]]
 }
 
