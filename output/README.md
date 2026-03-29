@@ -4,11 +4,12 @@ When the pipeline completes, you should expect these outputs.
 
 ## Final tables (locked, public-facing)
 - `output/tables/final_main_wellbeing_table.csv` — Primary treatment × primary outcomes, CR2/Satterthwaite inference
-- `output/tables/final_robustness_wellbeing_table.csv` — CCE, subgroup, measurement, falsification branches (primary treatment only, labeled inference standard)
+- `output/tables/final_robustness_wellbeing_table.csv` — Primary-treatment robustness surface with labeled inference standards across CCE, subgroup, measurement, falsification, control-ladder, no-lagged-outcome trends, slow-response, distributed-lag, wild-bootstrap, and retained dynamic-panel branches
 - `output/tables/final_hard_outcome_table.csv` — Mortality falsification (with `treatment_role`)
 - `output/tables/final_extension_outcomes_table.csv` — Secondary wellbeing and material outcomes (with `treatment_role`)
 
 ## Model outputs (intermediate)
+- The standalone branch files below are intermediate/raw branch outputs. Treat `final_main_wellbeing_table.csv` and `final_robustness_wellbeing_table.csv` as the authoritative locked read when inference layers differ.
 - `output/tables/baseline_fe_coefficients.csv` — Baseline FE coefficients
 - `output/tables/fe_spec_coefficients.csv` — Full spec-grid FE coefficients (with `treatment_role`)
 - `output/tables/baseline_fe_table.txt` — Baseline FE formatted table
@@ -23,6 +24,12 @@ When the pipeline completes, you should expect these outputs.
 - `output/tables/wellbeing_hard_outcome_falsification.csv` — Mortality falsification (pre-aggregation)
 - `output/tables/wellbeing_subgroup_dynamic_fe.csv` — Subgroup reverse-causality checks
 - `output/tables/extended_outcomes_dynamic_fe.csv` — Secondary/material wellbeing extensions
+- `output/tables/wellbeing_control_ladder.csv` — Intermediate control-ladder branch output
+- `output/tables/wellbeing_trends_benchmark.csv` — Intermediate no-lagged-outcome trends branch output
+- `output/tables/wellbeing_slow_response.csv` — Intermediate moving-average treatment branch output
+- `output/tables/wellbeing_distributed_lag.csv` — Intermediate distributed-lag branch output
+- `output/tables/wellbeing_wild_bootstrap.csv` — Intermediate wild-cluster bootstrap branch output
+- `output/tables/wellbeing_dynamic_panel_gmm.csv` — Intermediate dynamic-panel branch output
 
 ## Sensitivity outputs
 - `output/tables/placebo_lead_test.csv` — Lead placebo test
