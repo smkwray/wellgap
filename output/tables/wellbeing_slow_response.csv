@@ -1,0 +1,3 @@
+term,estimate,std.error,statistic,p.value,conf.low,conf.high,model_type,n_obs,outcome,treatment,treatment_variant,lag_window,spec,control_set
+ma3_l1_disp_top10_share_z,0.6078158388228032,1.660167783557162,0.3661171146933507,0.7158222915176295,-2.7267292904570577,3.942360968102664,dynamic_fe_ma3_treatment,254,frequent_mental_distress_rate,l1_disp_top10_share_z,ma3_l1_disp_top10_share_z,3,baseline,causal_core
+ma3_l1_disp_top10_share_z,1.1413872563198877,1.2621368492085154,0.9043292389693323,0.37015763552751046,-1.3936892128760199,3.676463725515795,dynamic_fe_ma3_treatment,254,fair_poor_health_rate,l1_disp_top10_share_z,ma3_l1_disp_top10_share_z,3,baseline,causal_core

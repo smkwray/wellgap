@@ -24,12 +24,17 @@ cr2_term_stats <- function(model, term, cluster) {
   cluster_used <- cluster[fixest::obs(model)]
   out <- clubSandwich::coef_test(model, vcov = "CR2", cluster = cluster_used, test = "Satterthwaite")
   row <- out[out$Coef == term, , drop = FALSE]
+  estimate <- stats::coef(model)[[term]]
+  crit <- stats::qt(0.975, df = row$df_Satt[[1]])
 
   tibble::tibble(
+    cr2_estimate = estimate,
     cr2_se = row$SE[[1]],
     cr2_t = row$tstat[[1]],
     cr2_df = row$df_Satt[[1]],
-    cr2_p = row$p_Satt[[1]]
+    cr2_p = row$p_Satt[[1]],
+    cr2_conf.low = estimate - crit * row$SE[[1]],
+    cr2_conf.high = estimate + crit * row$SE[[1]]
   )
 }
 
@@ -37,17 +42,43 @@ safe_cr2_term_stats <- function(model, term, cluster) {
   tryCatch(
     cr2_term_stats(model, term, cluster),
     error = function(e) {
-      tibble::tibble(cr2_se = NA_real_, cr2_t = NA_real_, cr2_df = NA_real_, cr2_p = NA_real_)
+      tibble::tibble(
+        cr2_estimate = NA_real_,
+        cr2_se = NA_real_,
+        cr2_t = NA_real_,
+        cr2_df = NA_real_,
+        cr2_p = NA_real_,
+        cr2_conf.low = NA_real_,
+        cr2_conf.high = NA_real_
+      )
     }
   )
 }
 
 tidy_locked_model <- function(model, term, model_type, cluster) {
   cr2 <- safe_cr2_term_stats(model, term, cluster)
-  inf_std <- if (all(is.na(cr2$cr2_se))) "conventional_clustered" else "CR2_Satterthwaite"
+  has_cr2 <- !all(is.na(cr2$cr2_se))
+  inf_std <- if (has_cr2) "CR2_Satterthwaite" else "conventional_clustered"
   broom::tidy(model, conf.int = TRUE) |>
     dplyr::filter(term == !!term) |>
-    dplyr::mutate(model_type = model_type, n_obs = stats::nobs(model)) |>
+    dplyr::rename(
+      cluster_estimate = estimate,
+      cluster_std.error = std.error,
+      cluster_statistic = statistic,
+      cluster_p.value = p.value,
+      cluster_conf.low = conf.low,
+      cluster_conf.high = conf.high
+    ) |>
+    dplyr::mutate(
+      estimate = dplyr::if_else(has_cr2, cr2$cr2_estimate, cluster_estimate),
+      std.error = dplyr::if_else(has_cr2, cr2$cr2_se, cluster_std.error),
+      statistic = dplyr::if_else(has_cr2, cr2$cr2_t, cluster_statistic),
+      p.value = dplyr::if_else(has_cr2, cr2$cr2_p, cluster_p.value),
+      conf.low = dplyr::if_else(has_cr2, cr2$cr2_conf.low, cluster_conf.low),
+      conf.high = dplyr::if_else(has_cr2, cr2$cr2_conf.high, cluster_conf.high),
+      model_type = model_type,
+      n_obs = stats::nobs(model)
+    ) |>
     dplyr::bind_cols(cr2) |>
     dplyr::mutate(inference_standard = inf_std)
 }
@@ -84,17 +115,18 @@ build_final_main_wellbeing_table <- function(panel = read_panel()) {
   longdiff_rows <- purrr::map_dfr(names(specs), function(spec_name) {
     controls <- clean_control_set(sample, specs[[spec_name]]$controls)
     purrr::map_dfr(outcomes, function(outcome) {
-      diff_n <- wellbeing_longdiff_horizon(outcome)
-      prep <- prepare_long_difference_data(sample, outcome, treatment, controls, diff_n = diff_n)
-      mod <- run_long_difference_wellbeing(sample, outcome = outcome, treatment = treatment, controls = controls, diff_n = diff_n)
-      tidy_locked_model(mod, prep$treatment_var, paste0("long_diff_", diff_n, "y"), prep$data$state) |>
-        dplyr::mutate(
-          spec = spec_name,
-          outcome = outcome,
-          treatment = treatment,
-          diff_n = diff_n,
-          control_set = if (spec_name == "baseline") "causal_core" else "rich"
-        )
+      purrr::map_dfr(wellbeing_longdiff_horizons(), function(diff_n) {
+        prep <- prepare_long_difference_data(sample, outcome, treatment, controls, diff_n = diff_n)
+        mod <- run_long_difference_wellbeing(sample, outcome = outcome, treatment = treatment, controls = controls, diff_n = diff_n)
+        tidy_locked_model(mod, prep$treatment_var, paste0("long_diff_", diff_n, "y"), prep$data$state) |>
+          dplyr::mutate(
+            spec = spec_name,
+            outcome = outcome,
+            treatment = treatment,
+            diff_n = diff_n,
+            control_set = if (spec_name == "baseline") "causal_core" else "rich"
+          )
+      })
     })
   })
 
@@ -185,7 +217,106 @@ build_final_wellbeing_robustness_table <- function(panel = read_panel()) {
                     branch = "within_brfss_falsification", spec = "baseline")
   })
 
-  out <- dplyr::bind_rows(cce_rows, subgroup_rows, measurement_rows, falsification_rows)
+  # Branch 5: control ladder to separate minimal, causal-core, and rich estimands
+  control_ladder_rows <- purrr::map_dfr(names(locked_control_ladder_specs(sample)), function(spec_name) {
+    spec_controls <- locked_control_ladder_specs(sample)[[spec_name]]
+    purrr::map_dfr(outcomes, function(y) {
+      dat <- prepare_dynamic_wellbeing_data(sample, y, treatment, spec_controls)
+      mod <- run_dynamic_wellbeing_fe(sample, outcome = y, treatment = treatment, controls = spec_controls)
+      tidy_locked_model(mod, treatment, "dynamic_fe_control_ladder", dat$state) |>
+        dplyr::mutate(
+          outcome = y,
+          treatment = treatment,
+          branch = "control_ladder",
+          spec = spec_name,
+          control_set = spec_name,
+          control_count = length(spec_controls)
+        )
+    })
+  })
+
+  # Branch 6: no lagged-outcome benchmark with state-specific trends
+  trends_rows <- purrr::map_dfr(outcomes, function(y) {
+    dat <- prepare_trend_benchmark_data(sample, y, treatment, controls)
+    mod <- run_trend_benchmark_wellbeing(sample, outcome = y, treatment = treatment, controls = controls)
+    tidy_locked_model(mod, treatment, "dynamic_fe_state_trends", dat$state) |>
+      dplyr::mutate(
+        outcome = y,
+        treatment = treatment,
+        branch = "no_lagged_outcome_trends",
+        spec = "baseline"
+      )
+  })
+
+  # Branch 7: slower-response treatment using a 3-year moving average
+  slow_response_rows <- purrr::map_dfr(outcomes, function(y) {
+    prep <- prepare_moving_average_dynamic_data(sample, outcome = y, treatment = treatment, controls = controls, ma_window = 3L)
+    mod <- run_moving_average_dynamic_wellbeing_fe(sample, outcome = y, treatment = treatment, controls = controls, ma_window = 3L)
+    tidy_locked_model(mod, prep$treatment_var, "dynamic_fe_ma3_treatment", prep$data$state) |>
+      dplyr::mutate(
+        outcome = y,
+        treatment = treatment,
+        treatment_variant = prep$treatment_var,
+        lag_window = 3L,
+        branch = "slow_response",
+        spec = "baseline"
+      )
+  })
+
+  # Branch 8: distributed lag family for slower adjustment dynamics
+  distributed_lag_rows <- purrr::map_dfr(outcomes, function(y) {
+    prep <- prepare_distributed_lag_dynamic_data(sample, outcome = y, treatment = treatment, controls = controls, max_lag = 3L)
+    mod <- run_distributed_lag_dynamic_wellbeing_fe(sample, outcome = y, treatment = treatment, controls = controls, max_lag = 3L)
+    purrr::map_dfr(prep$lag_vars, function(lag_var) {
+      tidy_locked_model(mod, lag_var, "dynamic_fe_distributed_lag_3", prep$data$state) |>
+        dplyr::mutate(
+          outcome = y,
+          treatment = treatment,
+          treatment_variant = lag_var,
+          lag_window = 3L,
+          branch = "distributed_lag",
+          spec = "baseline"
+        )
+    })
+  })
+
+  # Branch 9: second small-sample inference layer via wild-cluster bootstrap
+  bootstrap_path <- path_project(cfg$paths$tables_root, "wellbeing_wild_bootstrap.csv")
+  bootstrap_rows <- if (file.exists(bootstrap_path)) {
+    safe_read_csv(bootstrap_path)
+  } else {
+    run_locked_wild_bootstrap_checks(panel)
+  }
+  bootstrap_rows <- bootstrap_rows |>
+    dplyr::filter(outcome %in% outcomes, treatment == !!treatment) |>
+    dplyr::mutate(branch = "small_sample_inference", spec = "baseline")
+
+  # Branch 10: dynamic-panel robustness benchmark
+  gmm_path <- path_project(cfg$paths$tables_root, "wellbeing_dynamic_panel_gmm.csv")
+  dynamic_panel_rows <- if (file.exists(gmm_path)) {
+    safe_read_csv(gmm_path)
+  } else {
+    run_locked_dynamic_panel_checks(panel)
+  }
+  if (!("retained" %in% names(dynamic_panel_rows))) {
+    dynamic_panel_rows$retained <- TRUE
+  }
+  dynamic_panel_rows <- dynamic_panel_rows |>
+    dplyr::filter(outcome %in% outcomes, treatment == !!treatment, retained %in% c(TRUE, 1)) |>
+    dplyr::mutate(branch = "dynamic_panel", spec = "baseline")
+
+  out <- dplyr::bind_rows(
+    cce_rows,
+    subgroup_rows,
+    measurement_rows,
+    falsification_rows,
+    control_ladder_rows,
+    trends_rows,
+    slow_response_rows,
+    distributed_lag_rows,
+    bootstrap_rows,
+    dynamic_panel_rows
+  )
   safe_write_csv(out, path_project(cfg$paths$tables_root, "final_robustness_wellbeing_table.csv"))
   invisible(out)
 }

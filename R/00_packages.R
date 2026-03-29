@@ -12,10 +12,10 @@ package_profiles <- list(
   modeling = c(
     "fixest", "broom", "modelsummary", "clubSandwich", "zoo",
     "DoubleML", "mlr3", "mlr3learners", "ranger", "glmnet",
-    "xgboost", "earth", "grf", "sensemakr"
+    "xgboost", "earth", "grf", "sensemakr", "plm"
   ),
   optional = c(
-    "did", "HonestDiD", "fwildclusterboot", "augsynth", "synthdid"
+    "did", "HonestDiD", "fwildclusterboot", "summclust", "augsynth", "synthdid"
   )
 )
 

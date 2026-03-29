@@ -1,0 +1,3 @@
+term,estimate,std.error,statistic,p.value,conf.low,conf.high,model_type,n_obs,boot_reps,boot_success,inference_standard,boot_engine,outcome,treatment,spec,control_set
+l1_disp_top10_share_z,0.2740899246431807,NA,0.0019690407947906686,0.998998998998999,NA,NA,dynamic_fe_wild_cluster_bootstrap,305,999,999,fwildclusterboot_rlean,R-lean,frequent_mental_distress_rate,l1_disp_top10_share_z,baseline,causal_core
+l1_disp_top10_share_z,1.343010391978818,NA,0.006775189338538572,0.95995995995996,NA,NA,dynamic_fe_wild_cluster_bootstrap,305,999,999,fwildclusterboot_rlean,R-lean,fair_poor_health_rate,l1_disp_top10_share_z,baseline,causal_core

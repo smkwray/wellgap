@@ -36,14 +36,9 @@ When the pipeline completes, you should expect these outputs.
 - `output/tables/causal_forest_ate.csv` — Generalized random forest ATE
 - `output/tables/causal_forest_importance.csv` — GRF variable importance
 
-## Logs and notes
-- `output/logs/validation_report.md` — Validation summary
-- `output/logs/validation_checks.csv` — Validation check details
-- `output/logs/final_results_note.md` — Compact results summary
-- `output/logs/identification_note.md` — Identification strategy memo
-- `output/logs/causal_robustness_note.md` — Robustness test summary
-- `output/logs/extended_outcomes_note.md` — Hard outcomes interpretation
-- `output/logs/post_qcew_interpretation_memo.md` — Labor market controls memo
+## Local logs and notes
+- `output/logs/` is generated locally for validation reports and working notes.
+- It is intentionally not part of the tracked public repo surface.
 
 ## Final analysis data
 - `data/final/state_year_panel.rds`

@@ -1,0 +1,7 @@
+term,estimate,std.error,statistic,p.value,conf.low,conf.high,model_type,n_obs,outcome,treatment,spec,control_set,control_count
+l1_disp_top10_share_z,0.22881511761934947,0.6686981214045308,0.34217999168107,0.7336496399989332,-1.1143045873723816,1.5719348226110803,dynamic_fe_control_ladder,356,frequent_mental_distress_rate,l1_disp_top10_share_z,minimal,minimal,6
+l1_disp_top10_share_z,0.8304469306549245,0.7376637293183981,1.1257798067721971,0.2656334896839711,-0.6511942745337731,2.312088135843622,dynamic_fe_control_ladder,356,fair_poor_health_rate,l1_disp_top10_share_z,minimal,minimal,6
+l1_disp_top10_share_z,0.2740899246431807,0.7073342544054357,0.3874970326067025,0.7000329428209389,-1.1466327373438547,1.6948125866302162,dynamic_fe_control_ladder,305,frequent_mental_distress_rate,l1_disp_top10_share_z,causal_core,causal_core,8
+l1_disp_top10_share_z,1.343010391978818,0.9126337824899114,1.471576461167943,0.1474017099110371,-0.49006850785227707,3.1760892918099133,dynamic_fe_control_ladder,305,fair_poor_health_rate,l1_disp_top10_share_z,causal_core,causal_core,8
+l1_disp_top10_share_z,0.19124273683647372,0.80370191972267,0.2379523205599223,0.8128905193418117,-1.423040077435369,1.8055255511083166,dynamic_fe_control_ladder,304,frequent_mental_distress_rate,l1_disp_top10_share_z,rich,rich,13
+l1_disp_top10_share_z,0.605550050308378,0.9754771451539984,0.6207731809162786,0.5375684887799431,-1.3537534582367217,2.564853558853478,dynamic_fe_control_ladder,304,fair_poor_health_rate,l1_disp_top10_share_z,rich,rich,13

@@ -119,6 +119,13 @@ analysis:
   primary_consumption_outcomes:
     - "log_real_pce_pc"
     - "real_pce_pc_growth"
+  minimal_controls:
+    - "l1_log_real_mean_income"
+    - "l1_rpp_all_items"
+    - "l1_unemployment_rate"
+    - "l1_college_share"
+    - "l1_black_share"
+    - "l1_hispanic_share"
   baseline_controls:
     - "l1_log_real_mean_income"
     - "l1_rpp_all_items"

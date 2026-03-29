@@ -4,8 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RAW_DIR="$ROOT/data/raw/cdc_wonder"
 ARTIFACT_DIR="$ROOT/output/playwright/cdc_wonder"
-CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
-PWCLI="$CODEX_HOME/skills/playwright/scripts/playwright_cli.sh"
+PWCLI="${PLAYWRIGHT_WRAPPER:-${PWCLI:-}}"
 
 if ! command -v npx >/dev/null 2>&1; then
   echo "npx is required for the Playwright wrapper." >&2
@@ -14,6 +13,11 @@ fi
 
 if ! command -v jq >/dev/null 2>&1; then
   echo "jq is required to convert Playwright JSON output into CSV." >&2
+  exit 1
+fi
+
+if [[ -z "$PWCLI" || ! -x "$PWCLI" ]]; then
+  echo "Set PLAYWRIGHT_WRAPPER to an executable playwright_cli.sh path." >&2
   exit 1
 fi
 

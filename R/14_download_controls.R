@@ -46,8 +46,17 @@ download_with_ua <- function(url, dest, overwrite = FALSE) {
 }
 
 playwright_wrapper_path <- function() {
-  codex_home <- Sys.getenv("CODEX_HOME", unset = file.path(path.expand("~"), ".codex"))
-  file.path(codex_home, "skills", "playwright", "scripts", "playwright_cli.sh")
+  env_path <- Sys.getenv("PLAYWRIGHT_WRAPPER", unset = "")
+  if (nzchar(env_path)) {
+    return(env_path)
+  }
+
+  project_script <- path_project("scripts", "playwright_cli.sh")
+  if (file.exists(project_script)) {
+    return(project_script)
+  }
+
+  ""
 }
 
 run_playwright_cli <- function(args) {
@@ -469,11 +478,12 @@ download_dol_min_wage_history_tables <- function(overwrite = FALSE) {
   raw_path <- path_project(cfg$paths$raw_root, "controls", "dol_min_wage_history_tables.json")
   if (file.exists(raw_path) && !isTRUE(overwrite)) return(raw_path)
 
-  if (!file.exists(playwright_wrapper_path())) {
-    stop("Playwright wrapper not found at ", playwright_wrapper_path(), call. = FALSE)
-  }
-  if (!nzchar(Sys.which("npx"))) {
-    stop("npx is required to use the Playwright wrapper for DOL minimum wage history.", call. = FALSE)
+  pwcli <- playwright_wrapper_path()
+  if (!nzchar(pwcli) || !file.exists(pwcli)) {
+    stop(
+      "Playwright wrapper not found. Set PLAYWRIGHT_WRAPPER to a compatible script path.",
+      call. = FALSE
+    )
   }
 
   note("Rendering DOL minimum wage history page in Playwright")

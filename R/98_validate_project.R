@@ -50,10 +50,7 @@ intermediate_data_files <- c(
   "data/final/state_year_panel.rds"
 )
 
-core_output_files <- c(
-  "output/tables/baseline_fe_coefficients.csv",
-  "output/tables/fe_spec_coefficients.csv",
-  "output/tables/local_projection_coefficients.csv",
+locked_required_output_files <- c(
   "output/tables/placebo_lead_test.csv",
   "output/tables/leave_one_state_out.csv",
   "output/tables/sample_split_fe.csv",
@@ -71,7 +68,13 @@ core_output_files <- c(
   "output/tables/wellbeing_subgroup_dynamic_fe.csv"
 )
 
-exploratory_output_files <- c(
+supporting_output_files <- c(
+  "output/tables/baseline_fe_coefficients.csv",
+  "output/tables/fe_spec_coefficients.csv",
+  "output/tables/local_projection_coefficients.csv"
+)
+
+optional_exploratory_output_files <- c(
   "output/tables/dml_results.csv",
   "output/tables/event_study_coefficients.csv",
   "output/tables/causal_forest_ate.csv",
@@ -102,7 +105,7 @@ validate_required_files <- function(mode = c("author_full", "clone_smoke_test"))
     }
   }
 
-  for (f in core_output_files) {
+  for (f in c(locked_required_output_files, supporting_output_files)) {
     checks[[length(checks) + 1]] <- make_check(
       check = paste("file_exists", f),
       ok = file.exists(path_project(f)),
@@ -110,7 +113,7 @@ validate_required_files <- function(mode = c("author_full", "clone_smoke_test"))
     )
   }
 
-  for (f in exploratory_output_files) {
+  for (f in optional_exploratory_output_files) {
     checks[[length(checks) + 1]] <- make_check(
       check = paste("file_exists", f),
       ok = file.exists(path_project(f)),
@@ -321,6 +324,61 @@ validate_output_shapes <- function() {
     )
   }
 
+  if (file.exists(path_project("output/tables/wellbeing_trends_benchmark.csv"))) {
+    trends <- safe_read_csv(path_project("output/tables/wellbeing_trends_benchmark.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "wellbeing_trends_benchmark_outcomes_present",
+      all(c(analysis_primary_outcome(), analysis_secondary_outcome()) %in% trends$outcome),
+      sprintf("outcomes=%s", paste(sort(unique(trends$outcome)), collapse = ","))
+    )
+  }
+
+  if (file.exists(path_project("output/tables/wellbeing_slow_response.csv"))) {
+    slow <- safe_read_csv(path_project("output/tables/wellbeing_slow_response.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "wellbeing_slow_response_lag_window_present",
+      "lag_window" %in% names(slow) && all(slow$lag_window == 3),
+      sprintf("has_col=%s", "lag_window" %in% names(slow))
+    )
+  }
+
+  if (file.exists(path_project("output/tables/wellbeing_distributed_lag.csv"))) {
+    dlag <- safe_read_csv(path_project("output/tables/wellbeing_distributed_lag.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "wellbeing_distributed_lag_terms_present",
+      "treatment_variant" %in% names(dlag) && length(unique(dlag$treatment_variant)) >= 3,
+      sprintf("n_terms=%s", if ("treatment_variant" %in% names(dlag)) length(unique(dlag$treatment_variant)) else 0)
+    )
+  }
+
+  if (file.exists(path_project("output/tables/wellbeing_control_ladder.csv"))) {
+    ladder <- safe_read_csv(path_project("output/tables/wellbeing_control_ladder.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "wellbeing_control_ladder_specs_present",
+      all(c("minimal", "causal_core", "rich") %in% ladder$control_set),
+      sprintf("control_sets=%s", paste(sort(unique(ladder$control_set)), collapse = ","))
+    )
+  }
+
+  if (file.exists(path_project("output/tables/wellbeing_wild_bootstrap.csv"))) {
+    wild <- safe_read_csv(path_project("output/tables/wellbeing_wild_bootstrap.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "wellbeing_wild_bootstrap_inference_standard",
+      "inference_standard" %in% names(wild) &&
+        all(wild$inference_standard %in% c("wild_cluster_rademacher", "fwildclusterboot_rlean")),
+      sprintf("has_col=%s", "inference_standard" %in% names(wild))
+    )
+  }
+
+  if (file.exists(path_project("output/tables/wellbeing_dynamic_panel_gmm.csv"))) {
+    gmm <- safe_read_csv(path_project("output/tables/wellbeing_dynamic_panel_gmm.csv"))
+    checks[[length(checks) + 1]] <- make_check(
+      "wellbeing_dynamic_panel_diagnostics_present",
+      all(c("m1_p", "m2_p", "sargan_p") %in% names(gmm)),
+      sprintf("cols=%s", paste(intersect(c("m1_p", "m2_p", "sargan_p"), names(gmm)), collapse = ","))
+    )
+  }
+
   if (file.exists(path_project("output/tables/extended_outcomes_dynamic_fe.csv"))) {
     ext <- safe_read_csv(path_project("output/tables/extended_outcomes_dynamic_fe.csv"))
     checks[[length(checks) + 1]] <- make_check(
@@ -361,6 +419,18 @@ validate_output_shapes <- function() {
       all(final_rob$treatment == analysis_primary_treatment()),
       sprintf("treatments=%s", paste(sort(unique(final_rob$treatment)), collapse = ","))
     )
+    checks[[length(checks) + 1]] <- make_check(
+      "final_robustness_table_backend_branches_present",
+      all(c(
+        "control_ladder",
+        "no_lagged_outcome_trends",
+        "slow_response",
+        "distributed_lag",
+        "small_sample_inference",
+        "dynamic_panel"
+      ) %in% final_rob$branch),
+      sprintf("branches=%s", paste(sort(unique(final_rob$branch)), collapse = ","))
+    )
   }
 
   if (file.exists(path_project("output/tables/final_hard_outcome_table.csv"))) {
@@ -399,6 +469,8 @@ write_validation_report <- function(checks) {
     sprintf("- PASS: %s", sum(checks$status == "PASS")),
     sprintf("- WARN: %s", sum(checks$status == "WARN")),
     sprintf("- FAIL: %s", sum(checks$status == "FAIL")),
+    "- Locked required outputs and supporting pipeline outputs fail validation when missing or malformed.",
+    "- Optional exploratory outputs warn when missing; they do not fail validation.",
     "",
     "| Check | Status | Detail |",
     "|---|---|---|"
