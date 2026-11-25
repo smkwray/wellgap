@@ -1,241 +1,101 @@
 # wellgap
 
-Does rising income inequality affect population wellbeing? This project builds a state-year panel for the United States and applies a series of increasingly strict observational models to find out. The short answer: apparent associations between inequality and wellbeing weaken as the statistical design becomes more defensible. Under the strictest inference, the main results are null to mixed.
+`wellgap` is a reproducible R pipeline that asks whether a rise in a state's top-10% share of disposable income, holding average income and prices roughly constant, lowers self-reported wellbeing. It builds a state-year panel for the 50 U.S. states and DC and estimates observational models on a fixed 2012–2019 sample. The model output tables are committed, so you can inspect every result without rebuilding the data.
 
-## Question
-
-Holding average income and price levels roughly constant, do increases in top-end income concentration reduce self-reported wellbeing at the state level?
+Under dynamic fixed-effects and long-difference models with small-sample-corrected standard errors, the estimates for frequent mental distress and fair or poor self-rated health are statistically null with both the baseline and the richer control set. Associations seen in simpler fixed-effects specifications do not survive these models. The intervals are wide, so the results do not rule out small or slow-acting effects, and they are not causal estimates.
 
 ## Data and sample
 
-The analysis panel covers all 50 states plus DC. The locked main estimation sample is **2012--2019**. The year 2020 is omitted from the locked design because the standard ACS 1-year data path is unavailable in its usual form for that year and because pandemic-period disruptions make that year difficult to treat as part of the same smooth annual design. The broader panel (2012--2019, 2021--2024) is retained for extension and exploratory work only.
-
-**Primary data sources:**
+The main sample is 2012–2019. The year 2020 is excluded because standard ACS 1-year data were not released in their usual form for that year and because pandemic disruptions break the annual series. The wider panel (2012–2019 and 2021–2024) is used only for extension and exploratory models.
 
 | Source | Role |
 |---|---|
-| ACS 1-year estimates | Demographics and baseline inequality (Gini) |
-| BEA Personal Income Distribution | Top-income-share treatment variable |
-| BRFSS annual state estimates | Self-reported health and mental distress outcomes |
-| BEA Regional Accounts | Real consumption, income, and price controls |
-| FHFA HPI, Census Building Permits | Housing market controls |
-| BLS LAUS, QCEW, union membership data | Labor market and institutional controls |
-| CDC WONDER | Mortality outcomes for hard-outcome checks |
+| American Community Survey (ACS) 1-year estimates | Demographics, unemployment, Gini coefficient |
+| Bureau of Economic Analysis (BEA) distribution of personal income | Top-10% disposable income share (treatment) |
+| Behavioral Risk Factor Surveillance System (BRFSS) | Self-reported health and mental distress (outcomes) |
+| BEA regional accounts | Real consumption, income, and regional price controls |
+| FHFA House Price Index, Census building permits | Housing controls |
+| BLS QCEW, BLS union membership, DOL state minimum wage history | Labor-market and institutional controls |
+| CDC WONDER | Mortality outcomes for falsification checks |
 
-## What was tested
+## Method
 
-**Locked primary treatment:** Lagged top-10% disposable income share (standardized), constructed from BEA state personal income distribution data.
+The treatment is the lagged, standardized top-10% disposable income share. The two primary outcomes, both from BRFSS, are the frequent mental distress rate (share of adults reporting 14 or more poor mental health days in the past 30) and the fair or poor self-rated health rate.
 
-**Primary outcomes:**
-
-- **Frequent mental distress rate** -- share of adults reporting 14 or more days of poor mental health in the past 30 days (BRFSS).
-- **Fair or poor self-rated health rate** -- share of adults rating their own health as fair or poor (BRFSS).
-
-**Controls:** The locked causal-core models include state fixed effects and Census-division-by-year fixed effects. The baseline control set adds lagged income, regional prices, unemployment, housing price growth, and housing supply. A richer control set adds minimum wage, union membership, and QCEW wage and industry-structure variables.
-
-## Models
-
-Two main model families carry the headline results:
-
-1. **Dynamic fixed effects** -- state and division-by-year fixed effects, a lagged dependent variable, and lagged controls. This is the primary specification.
-2. **Long-difference companion models** -- 2-year and 3-year differenced specifications that reduce sensitivity to slow-moving confounders at the cost of a smaller effective sample.
-
-Statistical inference in the locked final wellbeing tables uses CR2 (bias-reduced linearization) standard errors with Satterthwaite degrees of freedom, which are more appropriate than ordinary clustered standard errors when the number of clusters is moderate. The locked tables keep the conventional clustered values in `cluster_*` columns for comparison, but the unprefixed `std.error`, `p.value`, and confidence intervals are the headline inference layer.
-
-<details>
-<summary>Robustness and stress-test branches</summary>
-
-The project runs several additional checks beyond the main locked models:
-
-- **Control ladder** -- re-estimates the dynamic FE model under `minimal`, `causal_core`, and `rich` control sets to separate estimand choices from simple “more controls” rhetoric.
-- **No-lagged-outcome trends benchmark** -- replaces the lagged dependent variable with state-specific linear trends to bracket the dynamic FE design from the other side.
-- **Slower-response designs** -- adds a 3-year moving average treatment and a distributed-lag specification over `l1`, `l2`, and `l3` treatment values.
-- **Wild-cluster bootstrap inference** -- re-checks the locked dynamic FE coefficient using `fwildclusterboot`, not just CR2 / Satterthwaite.
-- **Dynamic-panel robustness** -- adds collapsed difference GMM as the retained dynamic-panel benchmark; system GMM is kept in the raw output file as attempted-but-not-retained because its overidentification diagnostics are weak.
-- **Correlated common effects (CCE) dynamic FE** -- adds latent common factors to guard against low-rank omitted trends.
-- **Subgroup reverse-causality checks** -- restricts to adults 65+ and retirees, whose health is less likely to feed back into current earnings and measured inequality.
-- **Measurement sensitivity** -- re-runs the main specification using age-standardized outcome rates and precision-weighted estimation.
-- **Within-BRFSS falsification** -- tests whether the treatment also predicts frequent physical distress and mean bad physical health days (outcomes that should be less responsive to income distribution than mental distress).
-- **Hard-outcome falsification** -- tests associations with state-level age-adjusted suicide and drug poisoning mortality rates (CDC WONDER).
-- **Extension outcomes** -- examines employment-to-population ratio, price-adjusted median household income, and secondary wellbeing measures under the same framework.
-- **Alternative inequality measures** -- Gini coefficient and mean-median income gap are kept as secondary or appendix treatments rather than the locked primary estimand.
-- **Exploratory modules** -- DML, event study, causal forest, and local projections remain in the repo, but they are not the headline robustness layer for the locked wellbeing claim.
-
-</details>
+The primary model is a dynamic fixed-effects (FE) regression with state and Census-division-by-year fixed effects, a lagged outcome, and lagged controls. Companion 2- and 3-year long-difference models reduce sensitivity to slow-moving confounders at the cost of sample size. Baseline controls are lagged income, regional prices, unemployment, house price growth, and housing supply; the rich set adds minimum wage, union membership, and QCEW wage and industry structure. Inference uses CR2 (bias-reduced linearization) standard errors with Satterthwaite degrees of freedom, which suit about 50 clusters better than ordinary clustered errors; the final tables keep the conventional values in `cluster_*` columns.
 
 ## Results
 
-### Main findings
+Effect of a one-standard-deviation increase in the lagged top-10% share, in percentage points, with the CR2 p-value in parentheses (from `output/tables/final_main_wellbeing_table.csv`):
 
-Under the strictest available inference (CR2 standard errors), the dynamic fixed-effects models show **no statistically significant association** between lagged top-10% income share and either frequent mental distress or fair/poor self-rated health. This holds for both the baseline and richer control sets.
-
-The long-difference models produce a negative point estimate for mental distress (suggesting higher top-share concentration is associated with lower distress, directionally the opposite of the expected sign), but this estimate is imprecise and not significant under CR2 inference (p = 0.38 in the baseline specification, p = 0.44 in the richer specification). Fair/poor health is null in the long-difference models as well.
-
-### Robustness summary
-
-The robustness branches reinforce the null main read:
-
-- **Control ladder:** Null across `minimal`, `causal_core`, and `rich`. The locked treatment does not become stronger when the control set is thinned or expanded.
-- **No-lagged-outcome trends benchmark:** Null for both locked wellbeing outcomes.
-- **Moving-average design:** Null for both locked wellbeing outcomes.
-- **Distributed lags:** The raw distributed-lag file contains one positive third-lag mental-distress coefficient under conventional inference, but the locked CR2 read does not support a strong cumulative or headline effect.
-- **Wild-cluster bootstrap:** Confirms the null locked dynamic FE results under a second small-sample inference procedure.
-- **Dynamic-panel robustness:** Collapsed difference GMM is retained and remains null for mental distress and non-significant for fair/poor health. System GMM fails overidentification diagnostics and is not treated as retained headline evidence.
-- **CCE models:** Null across both outcomes (baseline specification).
-- **Subgroup checks:** Null for both the 65+ and retiree subsamples under CR2 inference.
-- **Measurement sensitivity:** Age-standardized outcomes are null under CR2. Precision-weighted variants use conventional clustered inference when CR2 is numerically unstable. The committed final robustness table labels each row's inference standard explicitly (see `inference_standard` column).
-- **Falsification outcomes:** The primary treatment does not significantly predict frequent physical distress or mean bad physical health days.
-- **Hard outcomes:** The primary top-share treatment shows no significant association with suicide or drug poisoning mortality. Some associations appear under alternative inequality measures (Gini, mean-median gap) for suicide, but these are not the locked primary estimand.
-- **Extension outcomes:** Mostly null for the primary treatment. Some associations between the mean-median income gap and price-adjusted median income reach significance, but these are a different treatment variable.
-
-<details>
-<summary>Key numbers from the main table</summary>
-
-All estimates are for the effect of a one-standard-deviation increase in lagged top-10% disposable income share.
-
-**Dynamic FE, baseline controls:**
-
-| Outcome | Estimate | CR2 p-value |
+| Model | Frequent mental distress | Fair/poor health |
 |---|---|---|
-| Frequent mental distress rate | +0.27 pp | 0.99 |
-| Fair/poor health rate | +1.34 pp | 0.96 |
+| Dynamic FE, baseline controls | +0.27 (0.99) | +1.34 (0.96) |
+| Dynamic FE, rich controls | +0.19 (0.99) | +0.61 (0.99) |
+| 2-year long difference, baseline | −0.55 (0.67) | +0.98 (0.60) |
+| 3-year long difference, baseline | −0.57 (0.75) | +0.74 (0.72) |
 
-**Dynamic FE, rich controls:**
+The robustness checks, collected in `output/tables/final_robustness_wellbeing_table.csv`, point the same way:
 
-| Outcome | Estimate | CR2 p-value |
-|---|---|---|
-| Frequent mental distress rate | +0.19 pp | 0.99 |
-| Fair/poor health rate | +0.61 pp | 0.99 |
+| Check | Result for the primary treatment |
+|---|---|
+| Minimal, core, and rich control sets | Null |
+| State linear trends instead of a lagged outcome | Null |
+| 3-year moving-average treatment; distributed lags | Null |
+| Wild-cluster bootstrap | Null |
+| Collapsed difference GMM (system GMM fails overidentification tests) | Not significant |
+| Correlated common effects (latent factors) | Null |
+| Adults 65+ and retirees only (reverse causality) | Null |
+| Age-standardized outcomes | Null |
+| Precision-weighted outcomes (conventional clustered errors; CR2 unstable) | Fair/poor health p = 0.034; mental distress not significant |
+| Physical distress outcomes (falsification) | Null |
+| Suicide and drug poisoning mortality (falsification) | Null; Gini and mean-median measures show some suicide associations |
+| Employment, real median household income | Null; Gini and mean-median measures show some income associations |
 
-**Long-difference (2-year), baseline controls:**
+Event-study, double machine learning, causal forest, and local projection modules are exploratory and not part of the headline result.
 
-| Outcome | Estimate | CR2 p-value |
-|---|---|---|
-| Frequent mental distress rate | -1.32 pp | 0.38 |
+## Limitations
 
-**Long-difference (3-year), baseline controls:**
+- The design is observational. Fixed effects, lagged outcomes, and controls reduce confounding but do not remove it; the main models assume no remaining state-level shocks drive both inequality and wellbeing.
+- With about 50 states and 6–8 usable years after lagging, power is low and results depend on the standard-error method. Moderate effects in either direction remain consistent with the data.
+- BRFSS state-year rates are survey estimates, and measurement error in treatment or outcome biases estimates toward zero.
+- The top-10% share is one inequality measure among several. Gini and mean-median gap results sometimes differ.
+- Lagged FHFA house price growth is non-missing for 459 of 612 panel rows, below the 500-row coverage threshold; this is the one validation warning.
+- The results say nothing about individual or neighborhood inequality, long-run mechanisms such as social trust or public goods, or the pandemic period.
 
-| Outcome | Estimate | CR2 p-value |
-|---|---|---|
-| Fair/poor health rate | +0.15 pp | 0.92 |
+## Reproduce
 
-</details>
-
-## What this does and does not show
-
-**What it shows:**
-
-- Apparent associations between state-level income inequality and self-reported wellbeing weaken substantially when the design includes state and division-by-year fixed effects, lagged controls, dynamic specifications, and small-sample-corrected inference.
-- The newer backend additions do not rescue a strong positive claim. The null main read survives the control ladder, no-lagged-outcome trends benchmark, slower-response treatment designs, wild-cluster bootstrap inference, and the retained collapsed difference-GMM estimator.
-- Null results under a defensible design are informative. They indicate that any population-level effect of top-income concentration on these self-reported health measures is either small, slow-acting, or operating through channels that are absorbed by the controls.
-- The project provides a reproducible panel with extensive stress testing. The validation suite passes with one warning (coverage of lagged housing price growth).
-
-**What it does not show:**
-
-- This project does not prove that income inequality has no effect on wellbeing. The estimates are imprecise enough that moderate effects in either direction remain consistent with the data.
-- It does not identify a causal effect. The design is observational. State fixed effects, division-by-year fixed effects, lagged outcomes, and time-varying controls reduce but do not eliminate confounding.
-- It does not speak to individual-level or neighborhood-level inequality effects, which may differ from state-level patterns.
-- It does not address mechanisms like relative deprivation, social trust, or public goods provision, which could operate on longer time horizons or through channels not captured here.
-
-## Assumptions and limitations
-
-The main models rest on a conditional parallel-trends assumption: after state fixed effects, division-by-year fixed effects, a lagged dependent variable, and lagged controls, there are no remaining state-level shocks that jointly drive both inequality and wellbeing strongly enough to explain the estimates.
-
-<details>
-<summary>Additional assumptions and known limitations</summary>
-
-- **Reverse causality.** The lagged treatment variable and subgroup checks (65+, retirees) partially address concerns that poor health feeds back into earnings and measured inequality, but cannot rule this out entirely.
-- **Measurement.** BRFSS state-year estimates are survey aggregates, not administrative records. Measurement error in both treatment and outcome variables will tend to attenuate estimates toward zero.
-- **Sample size.** With roughly 50 states and 6-8 usable time periods (after lagging), the effective sample is small by panel-data standards. This limits statistical power and makes inference sensitive to the choice of standard error estimator, which is why the project uses CR2 / Satterthwaite corrections.
-- **Treatment definition.** The BEA top-10% disposable income share is the locked primary treatment, but it is still only one of several possible inequality measures. Results using alternative measures (Gini, mean-median gap) sometimes differ, which suggests the choice of inequality metric matters.
-- **Coverage.** The lagged FHFA housing price index has a coverage warning (459 of 612 panel observations non-missing vs. a threshold of 500). All other variables meet their coverage thresholds.
-- **Omitted period.** Excluding 2020 improves internal comparability but means the analysis does not speak to pandemic-period inequality dynamics.
-
-</details>
-
-## Bottom line
-
-This project started with the question of whether rising income inequality reduces population wellbeing. After building a state-year panel, applying dynamic fixed-effects and long-difference models, and then extending the backend with control ladders, trends benchmarks, slower-response designs, wild-cluster bootstrap inference, and a retained collapsed difference-GMM check, the answer from the data is still: the relationship is not detectably robust under a disciplined observational design. Earlier, less strict specifications produced suggestive associations, but those associations do not survive stronger controls, stricter inference, or the broader robustness stack. The main contribution is now narrower but more credible: apparent inequality-wellbeing relationships weaken as the design becomes more defensible, and the remaining evidence is more consistent with small or weakly identified effects than with a strong population-level causal claim.
-
----
-
-## Repo structure
-
-```
-R/                       Analysis scripts (numbered by stage)
-  00_packages.R          Package loading
-  01_helpers.R           Shared utility functions
-  10-15_download_*.R     Data acquisition
-  20_build_panel.R       Panel construction
-  30_model_fe.R          Fixed-effects models
-  31_model_dml.R         Double machine learning
-  32_model_event_study.R Event study
-  33_model_grf.R         Causal forest
-  34_sensitivity.R       Sensitivity analysis
-  35_causal_robustness.R Robustness branches (CCE, subgroup, measurement, falsification)
-  36_extended_outcomes.R Extension outcomes
-  37_final_tables.R      Locked final tables with CR2 inference
-  98_validate_project.R  End-to-end validation
-  99_run_all.R           Full pipeline orchestrator
-scripts/                 Shell scripts (CDC WONDER fetch)
-config/config.yml        Project configuration
-data/
-  raw/                   Original downloaded files
-  intermediate/          Cleaned single-source intermediates
-  final/                 Integrated panel (state_year_panel.rds)
-output/
-  tables/                All model output tables (CSV)
-  logs/                  Generated locally for validation and working notes (not tracked)
-```
-
-## Reproduction
-
-<details>
-<summary>Setup and build instructions</summary>
-
-**Requirements:** R (tested on 4.x) with the packages listed in `R/00_packages.R`. Key dependencies include `fixest`, `clubSandwich`, `DoubleML`, `grf`, `survey`, and `tidycensus`.
-
-**API keys** (set in `~/.Renviron`):
-
-```
-CENSUS_API_KEY=your_key
-BEA_API_KEY=your_key
-BLS_API_KEY=your_key
-```
-
-**Run the full pipeline:**
+Requires R 4.x. Install the packages listed in `R/00_packages.R`:
 
 ```bash
-Rscript R/99_run_all.R
+Rscript -e 'source("R/00_packages.R"); setup_project_packages("full")'
 ```
 
-**Or run stage by stage:**
+On a fresh clone, with no data, check the configuration, script syntax, and committed output tables:
 
 ```bash
-Rscript -e 'source("R/00_packages.R")'
-Rscript -e 'source("R/10_download_acs.R"); download_acs_state_panel()'
-Rscript -e 'source("R/12_download_brfss.R"); build_brfss_panel()'
-Rscript -e 'source("R/20_build_panel.R"); build_state_year_panel()'
-Rscript -e 'source("R/30_model_fe.R"); panel <- read_panel(); run_primary_fe_models(panel)'
-Rscript R/98_validate_project.R
-```
-
-The `data/` directory is not committed to the repository. A fresh clone can inspect all committed output tables and run `--mode=clone` validation, but rebuilding the panel from source requires API keys (`CENSUS_API_KEY`, `BEA_API_KEY`, `BLS_API_KEY` in `~/.Renviron`). If the intermediate data files already exist under `data/intermediate/`, the panel can be rebuilt without live API calls.
-
-**Validate:**
-
-```bash
-# Full validation (requires data/intermediate/ and data/final/ from a prior build):
-Rscript R/98_validate_project.R
-
-# Clone-level smoke test (works on a fresh clone with no local data):
 Rscript R/98_validate_project.R --mode=clone
 ```
 
-The clone smoke test verifies config, R script syntax, locked/supporting committed output tables, and output shape checks. Full validation additionally checks intermediate data files, panel structure, and coverage thresholds. Optional exploratory outputs (event study, DML, causal forest) produce warnings rather than failures if missing.
+Rebuilding from source needs `CENSUS_API_KEY` and `BEA_API_KEY` in `~/.Renviron`. The DOL minimum-wage table and the CDC WONDER mortality exports are fetched through a browser with a Playwright CLI wrapper: set `PLAYWRIGHT_WRAPPER` to its executable path. The CDC WONDER script also needs `npx` and `jq`; without its exports the mortality checks are skipped.
 
-</details>
+```bash
+scripts/fetch_cdc_wonder_mortality.sh   # optional: mortality exports into data/raw/cdc_wonder/
+Rscript R/99_run_all.R                  # download, build the panel, run all models and final tables
+Rscript R/98_validate_project.R         # full validation of data, panel, and outputs
+```
+
+## Repository layout
+
+```
+R/                  Numbered pipeline scripts: 10–15 download, 20 panel, 30–37 models and final tables,
+                    98 validation, 99 full run
+scripts/            CDC WONDER export script
+config/config.yml   Years, sources, outcomes, and control sets
+output/tables/      Committed model output tables (CSV); output/README.md describes each file
+data/               Raw, intermediate, and final panel data (created by the pipeline, not committed)
+```
 
 ## License
 
-This project uses publicly available U.S. government data. The README is the canonical public-facing summary; internal docs and planning files are intentionally excluded from the tracked repo surface.
+MIT. See [LICENSE](LICENSE). The input data are public U.S. government data.

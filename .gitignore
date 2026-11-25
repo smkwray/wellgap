@@ -44,3 +44,4 @@ output/playwright/
 
 # Large / generated output files (tables and logs stay)
 *.rds
+.private-denylist
